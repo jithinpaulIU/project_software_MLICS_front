@@ -25,25 +25,25 @@ const AdminHeader = () => {
             <nav className="nav-menu d-none d-lg-block">
               <ul>
                 <li>
-                  <NavLink 
-                    to="/admindashboard" 
-                    className={({ isActive }) => isActive ? "active" : ""}
+                  <NavLink
+                    to="/admindashboard"
+                    className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     Dashboard
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/add_doctor"
-                    className={({ isActive }) => isActive ? "active" : ""}
+                    to="/admindashboard/add_doctor"
+                    className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     Doctors
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink 
+                  <NavLink
                     to="/admindashboard/labs"
-                    className={({ isActive }) => isActive ? "active" : ""}
+                    className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     Labs
                   </NavLink>
@@ -51,29 +51,18 @@ const AdminHeader = () => {
                 <li>
                   <NavLink
                     to="/admindashboard/request"
-                    className={({ isActive }) => isActive ? "active" : ""}
+                    className={({ isActive }) => (isActive ? "active" : "")}
                   >
                     Request
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink
-                    to="/"
-                    onClick={handleLogout}
-                  >
+                  <NavLink to="/" onClick={handleLogout}>
                     Logout
                   </NavLink>
                 </li>
               </ul>
             </nav>
-            {/* .nav-menu */}
-            {/* <Link
-            to="/admindashboard/add_doctor"
-            href={true}
-            className="appointment-btn scrollto"
-          >
-            Add Doctor
-          </Link> */}
           </div>
         </header>
         {/* End Header */}

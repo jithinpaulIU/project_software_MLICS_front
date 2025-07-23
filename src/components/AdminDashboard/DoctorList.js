@@ -1,173 +1,166 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid, GridColumnsContainer } from "@material-ui/data-grid";
-import IconButton from "@material-ui/core/IconButton";
-import Delete from "@material-ui/icons/Delete";
+import { DataGrid } from "@mui/x-data-grid";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import axios from "axios";
-import UpdateDoctorModel from "./UpdateDoctor";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { customToast, CustomToastComponent } from "../../customToast";
-
 import { css } from "@emotion/react";
 import ClipLoader from "react-spinners/ClipLoader";
-
 import { useSelector, useDispatch } from "react-redux";
-import * as actionTypes from "../../store/actions/index";
 import { FetchDoctor } from "../../store/actions/fetchaction";
+import { Box, Typography } from "@mui/material";
+import UpdateDoctorModel from "./UpdateDoctor";
+import { customToast } from "../../customToast";
 
-// Can be a string as well. Need to ensure each key-value pair ends with ;
 const override = css`
   display: block;
   margin: 0 auto;
   border-color: #cad3e8;
 `;
 
-const DoctorList = (props) => {
-  const [selectionData, setSelectionData] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
+const DoctorList = () => {
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const mlicsDoctorList = useSelector(
-    (state) => state.DoctorReducer.mlicsDoctorList,
-  );
-
-  const mlicsSelectedDoctor = useSelector(
-    (state) => state.DoctorReducer.mlicsSelectedDoctor,
+    (state) => state.DoctorReducer.mlicsDoctorList
   );
   const dispatch = useDispatch();
-  // console.log(mlicsSelectedDoctor);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(FetchDoctor());
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [dispatch]);
 
   const columns = [
     { field: "slno", headerName: "#", width: 90 },
     {
       field: "SSN",
       headerName: "SSN",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
       width: 120,
+      sortable: false,
     },
-    { field: "firstName", headerName: "First name", width: 200 },
-    { field: "lastName", headerName: "Last name", width: 150 },
+    { field: "firstName", headerName: "First Name", width: 200 },
+    { field: "lastName", headerName: "Last Name", width: 150 },
+    { field: "Phone", headerName: "Phone", width: 150 },
+    { field: "Email", headerName: "Email", width: 250 },
     {
-      field: "Phone",
-      headerName: "Phone",
-      type: "number",
-      width: 150,
-    },
-    {
-      field: "Email",
-      headerName: "Email",
-      // description: "This column has a value getter and is not sortable.",
-      // sortable: false,
-      width: 250,
-    },
-    {
-      field: "Action",
-      headerName: "Action",
+      field: "actions",
+      headerName: "Actions",
       width: 150,
       renderCell: (params) => (
         <>
-          <IconButton onClick={() => deleteDoctor(params.row.id)}>
-            <Delete />
-          </IconButton>
-
           <IconButton
-            variant="primary"
-            className="d-flex justify-content-between align-items-center"
-            onClick={() => setModalShow(true)}
+            onClick={() => handleDelete(params.row.id)}
+            color="error"
+            aria-label="delete"
+          >
+            <DeleteIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              setSelectedDoctor(params.row);
+              setModalOpen(true);
+            }}
+            color="primary"
+            aria-label="edit"
           >
             <EditOutlinedIcon />
           </IconButton>
-
-          <UpdateDoctorModel
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-            // UpdatedDocData={selectionData}
-            // FetchData={props.FetchData}
-          />
         </>
       ),
     },
   ];
 
-  const deleteDoctor = async (id) => {
-    console.log();
-    var answer = window.confirm("Delete Doctor datails?");
-    if (answer) {
-      let userInfo = localStorage.getItem("user");
-      userInfo = JSON.parse(userInfo);
-      var config = {
-        method: "delete",
-        url: `${process.env.REACT_APP_API_URL}doctor/` + id,
-        headers: {
-          Authorization: `Bearer ` + userInfo.token,
-          "Content-Type": "application/json",
-        },
-      };
-      await axios(config)
-        .then(async (response) => {
-          customToast("Doctor Deleted", "success");
-          // props.FetchData();
-          dispatch(FetchDoctor());
-        })
-        .catch((error) => {
-          console.log(error);
+  const handleDelete = async (id) => {
+    if (window.confirm("Delete doctor details?")) {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem("user"));
+        await axios.delete(`${process.env.REACT_APP_API_URL}doctor/${id}`, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
         });
+        customToast("Doctor Deleted", "success");
+        dispatch(FetchDoctor());
+      } catch (error) {
+        console.error("Delete error:", error);
+        customToast("Failed to delete doctor", "error");
+      }
     }
   };
 
-  if (mlicsDoctorList.length > 0 || "") {
-    const rows = mlicsDoctorList.map((DoclistItem, index) => {
-      const container = {};
-      let count = index + 1;
-      container.id = DoclistItem.id;
-
-      container.slno = count;
-      container.SSN = DoclistItem.SSN;
-      container.lastName = DoclistItem.lastName;
-      container.firstName = DoclistItem.firstName;
-      container.Phone = DoclistItem.mobileNo;
-      container.Email = DoclistItem.email;
-
-      return container;
-    });
-
+  if (loading) {
     return (
-      <React.Fragment>
-        <div
-          style={{ height: 400, width: "100%" }}
-          className="container d-flex align-items-center"
-        >
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            onRowSelected={(e) => {
-              setSelectionData(e.data);
-
-              dispatch({
-                type: actionTypes.UPDATE_DOCTORLIST,
-                mlicsSelectedDoctor: e.data,
-              });
-            }}
-          />
-
-          <CustomToastComponent />
-        </div>
-      </React.Fragment>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="300px"
+      >
+        <ClipLoader
+          color="#cad3e8"
+          loading={loading}
+          css={override}
+          size={50}
+        />
+      </Box>
     );
-  } else {
-    return <Loaders />;
   }
-};
 
-function Loaders() {
-  let [loading, setLoading] = useState(true);
-  let [color, setColor] = useState("#ffffff");
+  if (!mlicsDoctorList?.length) {
+    return (
+      <Box textAlign="center" p={4}>
+        <Typography variant="h6">No doctors found</Typography>
+      </Box>
+    );
+  }
+
+  const rows = mlicsDoctorList.map((doctor, index) => ({
+    id: doctor.id,
+    slno: index + 1,
+    SSN: doctor.SSN,
+    firstName: doctor.firstName,
+    lastName: doctor.lastName,
+    Phone: doctor.mobileNo,
+    Email: doctor.email,
+  }));
 
   return (
-    <div className="sweet-loading">
-      <ClipLoader color={color} loading={loading} css={override} size={150} />
-    </div>
+    <Box sx={{ height: 600, width: "100%", p: 2 }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
+        onRowClick={(params) => setSelectedDoctor(params.row)}
+        sx={{
+          "& .MuiDataGrid-cell:hover": {
+            cursor: "pointer",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "#f5f5f5",
+          },
+        }}
+      />
+
+      <UpdateDoctorModel
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        doctorData={selectedDoctor}
+        refreshData={() => dispatch(FetchDoctor())}
+      />
+    </Box>
   );
-}
+};
 
 export default DoctorList;

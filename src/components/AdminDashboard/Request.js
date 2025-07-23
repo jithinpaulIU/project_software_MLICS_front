@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from "react";
-
-import axios from "axios";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { CustomToastComponent } from "../../customToast";
 import RequestList from "./RequestList";
-
 import AdminFooter from "./AdminFooter";
 import AdminHeader from "./AdminHeader";
 
-import { useSelector, useDispatch } from "react-redux";
-
-// import { connect } from "react-redux";
-import * as actionTypes from "../../store/actions/index";
 import { FetchRequest } from "../../store/actions/fetchaction";
 
 const Request = () => {
-  let [reqList, setreqList] = useState([]);
-
   const mlicsRequestList = useSelector(
-    (state) => state.RequestReducer.mlicsRequestList,
+    (state) => state.RequestReducer.mlicsRequestList
   );
 
   const dispatch = useDispatch();
@@ -53,19 +45,13 @@ const Request = () => {
   // }, []);
 
   useEffect(() => {
-    const loadDoctor = async () => {
-      dispatch(FetchRequest());
-    };
-    loadDoctor();
+    dispatch(FetchRequest());
   }, [dispatch]);
 
   return (
     <div>
-      {/* ======= Top Bar ======= */} {/* ======= Header ======= */}
       <AdminHeader />
-      {/* End Header */}
       <main id="main">
-        {/* ======= Breadcrumbs Section ======= */}
         <section className="breadcrumbs">
           <div className="container">
             <div className="d-flex justify-content-between align-items-center">
@@ -73,14 +59,12 @@ const Request = () => {
             </div>
           </div>
         </section>
-        {/* End Breadcrumbs Section */}
-        <section className="inner-page  nopadding"></section>
-        <RequestList />
+
+        <section className="inner-page nopadding"></section>
+
+        <RequestList requests={mlicsRequestList} />
       </main>
-      {/* End #main */}
-      {/* ======= Footer ======= */}
       <AdminFooter />
-      {/* End Footer */}
       <a href="#top" className="back-to-top">
         <i className="icofont-simple-up" />
       </a>
