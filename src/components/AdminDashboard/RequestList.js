@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 
 import { CustomToastComponent } from "../../customToast";
 import moment from "moment";
@@ -9,7 +9,7 @@ const RequestList = (props) => {
   const [, setSelectionData] = useState([]);
 
   const mlicsRequestList = useSelector(
-    (state) => state.RequestReducer.mlicsRequestList,
+    (state) => state.RequestReducer.mlicsRequestList
   );
 
   const columns = [

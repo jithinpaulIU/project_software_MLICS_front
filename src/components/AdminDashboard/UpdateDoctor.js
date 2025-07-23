@@ -1,234 +1,207 @@
 import React, { useState } from "react";
-
 import axios from "axios";
-
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
 import { customToast } from "../../customToast";
 
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
+// MUI v5 Imports
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { styled } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
 
-import Container from "@material-ui/core/Container";
-
-import { Modal } from "react-bootstrap";
+// Phone Input
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
+// Redux
 import { useSelector, useDispatch } from "react-redux";
-import * as actionTypes from "../../store/actions/index";
 import { FetchDoctor } from "../../store/actions/fetchaction";
 
-const styles = (theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-});
+// Styled Components
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
-const UpdateDoctorModel = (props) => {
-  //   const [loader, setloader] = useState(false);
-  const [value, setValue] = useState();
-  const [, setModalShow] = useState(props.onHide);
+const ModalContent = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  width: 400,
+  maxWidth: "90%",
+}));
 
+const UpdateDoctorModel = ({ open, onClose }) => {
+  const [phoneValue, setPhoneValue] = useState();
   const dispatch = useDispatch();
 
   const mlicsSelectedDoctor = useSelector(
-    (state) => state.DoctorUpdate.mlicsSelectedDoctor,
+    (state) => state.DoctorUpdate.mlicsSelectedDoctor
   );
-  let userInfo = localStorage.getItem("user");
-  userInfo = JSON.parse(userInfo);
+
+  const userInfo = JSON.parse(localStorage.getItem("user"));
 
   const updateDoctor = async (fields) => {
-    // setloader(true);
-    let body = {
-      firstName: fields.firstName,
-      lastName: fields.lastName,
-      email: fields.email,
-      mobileNo: value,
-      password: fields.password,
-      SSN: fields.ssn,
-    };
+    try {
+      const body = {
+        firstName: fields.firstName,
+        lastName: fields.lastName,
+        email: fields.email,
+        mobileNo: phoneValue,
+        password: fields.password,
+        SSN: fields.ssn,
+      };
 
-    //
+      const config = {
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}doctor/${mlicsSelectedDoctor.id}`,
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+        data: body,
+      };
 
-    var config = {
-      method: "put",
-      url: `${process.env.REACT_APP_API_URL}doctor/` + mlicsSelectedDoctor.id,
-      headers: {
-        Authorization: `Bearer ` + userInfo.token,
-        "Content-Type": "application/json",
-      },
-      data: body,
-    };
-    //
-
-    await axios(config)
-      .then((res) => {
-        if ((res.status = 200)) {
-          customToast("Doctor Updated", "success");
-          dispatch(FetchDoctor());
-          setModalShow(props.onHide);
-        } else {
-          customToast("Something went Wrong", "error");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        customToast("Email already taken", "error");
-      });
+      const response = await axios(config);
+      if (response.status === 200) {
+        customToast("Doctor Updated", "success");
+        dispatch(FetchDoctor());
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      customToast(err.response?.data?.message || "Update failed", "error");
+    }
   };
 
   return (
-    <Modal
-      {...props}
-      size="medium"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
+    <StyledModal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="update-doctor-modal"
     >
-      <Modal.Header closeButton className="headerBg">
-        <Modal.Title
-          id="contained-modal-title-vcenter"
-          className="modal-title w-100 text-center"
-        >
+      <ModalContent>
+        <Typography variant="h6" component="h2" align="center" gutterBottom>
           Update Doctor
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+        </Typography>
+
         <Container component="main" maxWidth="xs">
           <CssBaseline />
-          <div className={styles.paper}>
-            {""}
+          <Box sx={{ mt: 2 }}>
             <Formik
               initialValues={{
-                firstName: mlicsSelectedDoctor.firstName,
-                lastName: mlicsSelectedDoctor.lastName,
-                PhoneInput: mlicsSelectedDoctor.Phone,
-                email: mlicsSelectedDoctor.Email,
+                firstName: mlicsSelectedDoctor?.firstName || "",
+                lastName: mlicsSelectedDoctor?.lastName || "",
+                email: mlicsSelectedDoctor?.email || "",
                 password: "",
-                ssn: mlicsSelectedDoctor.SSN,
+                ssn: mlicsSelectedDoctor?.SSN || "",
               }}
               validationSchema={Yup.object().shape({
                 firstName: Yup.string().required("First Name is required"),
                 lastName: Yup.string().required("Last Name is required"),
                 ssn: Yup.string().required("SSN is required"),
-
                 email: Yup.string()
-                  .email("Must be a valid mail")
+                  .email("Must be a valid email")
                   .required("Email is required"),
               })}
-              onSubmit={(fields) => {
-                updateDoctor(fields);
-              }}
+              onSubmit={updateDoctor}
             >
-              {({ errors, status, touched }) => (
-                <Form ncols={["col-md-6", "col-md-6"]}>
-                  <div className="form-group">
-                    <label htmlFor="firstName">First Name</label>
+              {({ errors, touched }) => (
+                <Form>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      First Name
+                    </Typography>
                     <Field
                       name="firstName"
                       type="text"
-                      className={
-                        "form-control" +
-                        (errors.firstName && touched.firstName
-                          ? " is-invalid"
-                          : "")
-                      }
+                      fullWidth
+                      variant="outlined"
+                      error={Boolean(errors.firstName && touched.firstName)}
+                      helperText={touched.firstName && errors.firstName}
+                      as={TextField}
                     />
-                    <ErrorMessage
-                      name="firstName"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="lastName">Last Name</label>
+                  </Box>
+
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Last Name
+                    </Typography>
                     <Field
                       name="lastName"
                       type="text"
-                      className={
-                        "form-control" +
-                        (errors.lastName && touched.lastName
-                          ? " is-invalid"
-                          : "")
-                      }
+                      fullWidth
+                      variant="outlined"
+                      error={Boolean(errors.lastName && touched.lastName)}
+                      helperText={touched.lastName && errors.lastName}
+                      as={TextField}
                     />
-                    <ErrorMessage
-                      name="lastName"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
+                  </Box>
 
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Email
+                    </Typography>
                     <Field
                       name="email"
-                      type="text"
-                      className={
-                        "form-control" +
-                        (errors.email && touched.email ? " is-invalid" : "")
-                      }
+                      type="email"
+                      fullWidth
+                      variant="outlined"
+                      error={Boolean(errors.email && touched.email)}
+                      helperText={touched.email && errors.email}
+                      as={TextField}
                     />
-                    <ErrorMessage
-                      name="email"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
+                  </Box>
 
-                  <div className="form-group">
-                    <label htmlFor="ssn">SSN</label>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      SSN
+                    </Typography>
                     <Field
                       name="ssn"
                       type="text"
-                      className={
-                        "form-control" +
-                        (errors.ssn && touched.ssn ? " is-invalid" : "")
-                      }
+                      fullWidth
+                      variant="outlined"
+                      error={Boolean(errors.ssn && touched.ssn)}
+                      helperText={touched.ssn && errors.ssn}
+                      as={TextField}
                     />
-                    <ErrorMessage
-                      name="ssn"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
+                  </Box>
 
-                  <div className="form-group">
-                    <label htmlFor="phonenumber">Phone Number</label>
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Phone Number
+                    </Typography>
                     <PhoneInput
                       defaultCountry="US"
-                      value={mlicsSelectedDoctor.Phone}
-                      onChange={setValue}
+                      value={mlicsSelectedDoctor?.mobileNo || phoneValue}
+                      onChange={setPhoneValue}
+                      style={{ width: "100%" }}
                     />
-                  </div>
+                  </Box>
 
-                  <div className="form-group" align="center" color="primary">
-                    <Button type="submit" className="modal-btn">
-                      Update Doctor
-                    </Button>
-                  </div>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                  >
+                    Update Doctor
+                  </Button>
                 </Form>
               )}
             </Formik>
-          </div>
+          </Box>
         </Container>
-      </Modal.Body>
-    </Modal>
+      </ModalContent>
+    </StyledModal>
   );
 };
 

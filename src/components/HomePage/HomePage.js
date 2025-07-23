@@ -13,12 +13,12 @@ const HomePage = () => {
       <TopBar />
       <Header />
       <HeroSection onLoginClick={() => setModalShow(true)} />
-      
+
       <main id="main">
         <AboutSection />
         <ContactSection />
       </main>
-      
+
       <Footer />
       <BackToTopLink />
       <LoginModal show={modalShow} onHide={() => setModalShow(false)} />
@@ -37,18 +37,20 @@ const TopBar = () => (
         <i className="icofont-google-map" /> A108 Adam Street, NY
       </div>
       <div className="social-links">
-        {['twitter', 'facebook', 'instagram', 'skype', 'linkedin'].map((platform) => (
-          <SocialLink key={platform} platform={platform} />
-        ))}
+        {["twitter", "facebook", "instagram", "skype", "linkedin"].map(
+          (platform) => (
+            <SocialLink key={platform} platform={platform} />
+          )
+        )}
       </div>
     </div>
   </div>
 );
 
 const SocialLink = ({ platform }) => (
-  <a 
-    href={`https://www.${platform}.com/`} 
-    target="_blank" 
+  <a
+    href={`https://www.${platform}.com/`}
+    target="_blank"
     rel="noopener noreferrer"
     className={platform}
   >
@@ -60,7 +62,7 @@ const HeroSection = ({ onLoginClick }) => (
   <section id="hero" className="d-flex align-items-center no-padding">
     <div className="container">
       <h1>
-        Medical Integration <br />
+        Medical Lab Integration <br />
         Cloud Services
       </h1>
       <NavLink
@@ -82,18 +84,21 @@ const AboutSection = () => {
     {
       icon: "bx-fingerprint",
       title: "Lorem Ipsum",
-      description: "Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi"
+      description:
+        "Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi",
     },
     {
       icon: "bx-gift",
       title: "Nemo Enim",
-      description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis"
+      description:
+        "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis",
     },
     {
       icon: "bx-atom",
       title: "Dine Pad",
-      description: "Explicabo est voluptatum asperiores consequatur magnam. Et veritatis odit."
-    }
+      description:
+        "Explicabo est voluptatum asperiores consequatur magnam. Et veritatis odit.",
+    },
   ];
 
   return (
@@ -107,13 +112,12 @@ const AboutSection = () => {
             <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
             <p>
               Esse voluptas cumque vel exercitationem. Reiciendis est hic
-              accusamus. Non ipsam et sed minima temporibus laudantium.
-              Soluta voluptate sed facere corporis dolores excepturi.
-              Libero laboriosam sint et id nulla tenetur. Suscipit aut
-              voluptate.
+              accusamus. Non ipsam et sed minima temporibus laudantium. Soluta
+              voluptate sed facere corporis dolores excepturi. Libero laboriosam
+              sint et id nulla tenetur. Suscipit aut voluptate.
             </p>
             {features.map((feature, index) => (
-              <FeatureIconBox 
+              <FeatureIconBox
                 key={index}
                 icon={feature.icon}
                 title={feature.title}
@@ -144,18 +148,18 @@ const ContactSection = () => {
     {
       icon: "icofont-google-map",
       title: "Location:",
-      content: "A108 Adam Street, New York, NY 535022"
+      content: "A108 Adam Street, New York, NY 535022",
     },
     {
       icon: "icofont-envelope",
       title: "Email:",
-      content: "info@mlics.com"
+      content: "info@mlics.com",
     },
     {
       icon: "icofont-phone",
       title: "Call:",
-      content: "+1 5589 55488 55s"
-    }
+      content: "+1 5589 55488 55s",
+    },
   ];
 
   return (
@@ -164,11 +168,10 @@ const ContactSection = () => {
         <div className="section-title">
           <h2>Contact</h2>
           <p>
-            Magnam dolores commodi suscipit. Necessitatibus eius
-            consequatur ex aliquid fuga eum quidem. Sit sint consectetur
-            velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit
-            suscipit alias ea. Quia fugiat sit in iste officiis commodi
-            quidem hic quas.
+            Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex
+            aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos
+            quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia
+            fugiat sit in iste officiis commodi quidem hic quas.
           </p>
         </div>
       </div>
@@ -209,7 +212,7 @@ const Footer = () => {
     { name: "About", to: "about" },
     { name: "Services", href: "#services" },
     { name: "Terms of service", href: "#services" },
-    { name: "Privacy policy", href: "#policy" }
+    { name: "Privacy policy", href: "#policy" },
   ];
 
   const servicesLinks = [
@@ -217,7 +220,7 @@ const Footer = () => {
     { name: "Web Development", href: "#development" },
     { name: "Product Management", href: "#management" },
     { name: "Marketing", href: "#marketing" },
-    { name: "Graphic Design", href: "#graphicdesign" }
+    { name: "Graphic Design", href: "#graphicdesign" },
   ];
 
   return (
@@ -244,8 +247,8 @@ const Footer = () => {
             <div className="col-lg-4 col-md-6 footer-newsletter">
               <h4>Join Our Newsletter</h4>
               <p>
-                Tamen quem nulla quae legam multos aute sint culpa legam
-                noster magna
+                Tamen quem nulla quae legam multos aute sint culpa legam noster
+                magna
               </p>
               {/* Newsletter form would go here */}
             </div>
@@ -264,15 +267,25 @@ const Footer = () => {
           </div>
           <div className="credits">
             Designed by{" "}
-            <a href="https://www.jp.com/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.jp.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Jp
             </a>
           </div>
         </div>
         <div className="social-links text-center text-md-right pt-3 pt-md-0">
-          {['twitter', 'facebook', 'instagram', 'skype', 'linkedin'].map((platform) => (
-            <SocialLink key={platform} platform={platform} icon={`bxl-${platform}`} />
-          ))}
+          {["twitter", "facebook", "instagram", "skype", "linkedin"].map(
+            (platform) => (
+              <SocialLink
+                key={platform}
+                platform={platform}
+                icon={`bxl-${platform}`}
+              />
+            )
+          )}
         </div>
       </div>
     </footer>
@@ -315,9 +328,7 @@ const LoginModal = ({ show, onHide }) => (
     backdrop="static"
   >
     <Modal.Header closeButton className="headerBg">
-      <Modal.Title className="modal-title w-100 text-center">
-        Login
-      </Modal.Title>
+      <Modal.Title className="modal-title w-100 text-center">Login</Modal.Title>
     </Modal.Header>
     <Modal.Body>
       <Login />

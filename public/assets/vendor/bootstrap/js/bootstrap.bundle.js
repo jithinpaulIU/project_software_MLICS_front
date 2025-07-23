@@ -2361,7 +2361,7 @@
   }
 
   /**
-   * Mimlics the `find` method of Array
+   * Mimics the `find` method of Array
    * @method
    * @memberof Popper.Utils
    * @argument {Array} arr

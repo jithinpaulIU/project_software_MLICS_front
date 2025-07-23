@@ -1,381 +1,313 @@
 import React from "react";
 import AdminFooter from "./AdminFooter";
 import AdminHeader from "./AdminHeader";
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 import down from "../../img/down.png";
 import up from "../../img/up.png";
 import filter from "../../img/filter.svg";
 import calander from "../../img/calendar.svg";
-import graph from "../../img/graph.png";
-import pie from "../../img/pie.png";
+
+// Register ChartJS components
+ChartJS.register(
+  BarElement,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+);
 
 const AdminDashboard = () => {
+  // Hardcoded data for the dashboard
+  const stats = [
+    { title: "Doctors Request", value: 24, trend: "up" },
+    { title: "Lab API", value: 15, trend: "down" },
+    { title: "Authentication by Doctors", value: 42, trend: "up" },
+    { title: "Request Growth From Last Week", value: "18%", trend: "up" },
+  ];
+
+  const doctorData = [
+    {
+      name: "Dr. Sarah Johnson",
+      lab: "Sanofi Genzyme",
+      requests: 24,
+      auth: 18,
+      trend: "up",
+      change: "2.5%",
+    },
+    {
+      name: "Dr. Michael Chen",
+      lab: "LabCorp",
+      requests: 18,
+      auth: 15,
+      trend: "down",
+      change: "1.2%",
+    },
+    {
+      name: "Dr. Emily Wilson",
+      lab: "Quest Diagnostics",
+      requests: 15,
+      auth: 12,
+      trend: "up",
+      change: "3.8%",
+    },
+    {
+      name: "Dr. David Rodriguez",
+      lab: "BioReference",
+      requests: 12,
+      auth: 10,
+      trend: "up",
+      change: "5.1%",
+    },
+    {
+      name: "Dr. Jessica Kim",
+      lab: "Mayo Clinic Labs",
+      requests: 9,
+      auth: 8,
+      trend: "down",
+      change: "0.7%",
+    },
+  ];
+
+  // Chart data - Monthly Requests (Bar Chart)
+  const monthlyRequestsData = {
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        label: "Lab Requests",
+        data: [45, 60, 75, 80, 65, 70, 85, 90, 78, 92, 88, 95],
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Authenticated Requests",
+        data: [30, 45, 50, 60, 45, 55, 65, 70, 58, 75, 70, 80],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Chart data - Request Distribution (Pie Chart)
+  const requestDistributionData = {
+    labels: [
+      "Sanofi Genzyme",
+      "LabCorp",
+      "Quest Diagnostics",
+      "BioReference",
+      "Mayo Clinic",
+    ],
+    datasets: [
+      {
+        data: [35, 25, 20, 12, 8],
+        backgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+        ],
+        hoverBackgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+        ],
+      },
+    ],
+  };
+
+  // Chart options
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "right",
+      },
+    },
+  };
+
   return (
     <div>
-      {/* ======= Top Bar ======= */} {/* ======= Header ======= */}
       <AdminHeader />
-      {/* End Header */}
+
       <main id="main" className="bg-white">
-        {/* ======= Breadcrumbs Section ======= */}
         <section className="breadcrumbs">
           <div className="container">
             <div className="d-flex justify-content-between align-items-center">
-              <h2>Admin Home</h2>
+              <h2>Admin Dashboard</h2>
             </div>
           </div>
         </section>
-        {/* End Breadcrumbs Section */}
+
         <section className="inner-page">
           <div className="container">
-            <section className="content">
-              {/* Info boxes */}
-              <div
-                className="well"
-                style={{ backgroundColor: "#FFFFFF !important" }}
-              >
-                <div className="row">
-                  <div className="col-md-3 col-sm-6 col-xs-12">
-                    <div className="info-box info-bg">
-                      <div className="info-box-content">
-                        <center>
-                          <span className="info-box-text">
-                            Doctors Request{" "}
-                          </span>
-                        </center>
-                        <br />
-                        <center>
-                          {" "}
-                          <span className="info-box-number-down">
-                            10{" "}
-                            <img
-                              src={down}
-                              alt="down"
-                              style={{ height: "28px" }}
-                            />
-                          </span>
-                        </center>
-                      </div>
-                      {/* /.info-box-content */}
-                    </div>
-                    {/* /.info-box */}
-                  </div>
-                  {/* /.col */}
-                  <div className="col-md-3 col-sm-6 col-xs-12">
-                    <div className="info-box info-bg">
-                      <div className="info-box-content">
-                        <center>
-                          <span className="info-box-text">Lab API</span>
-                        </center>
-                        <br />
-                        <center>
-                          {" "}
-                          <span className="info-box-number-up">
-                            12{" "}
-                            <img src={up} alt="up" style={{ height: "28px" }} />
-                          </span>
-                        </center>
-                      </div>
-                      {/* /.info-box-content */}
-                    </div>
-                    {/* /.info-box */}
-                  </div>
-                  {/* /.col */}
-                  {/* fix for small devices only */}
-                  <div className="clearfix visible-sm-block" />
-                  <div className="col-md-3 col-sm-6 col-xs-12">
-                    <div className="info-box info-bg">
-                      <div className="info-box-content">
-                        <center>
-                          <span className="info-box-text">
-                            Authenication
-                            <br />
-                            by Doctors
-                          </span>
-                        </center>
-                        <center>
-                          {" "}
-                          <span className="info-box-number-down">
-                            68{" "}
-                            <img
-                              src={down}
-                              alt="down"
-                              style={{ height: "28px" }}
-                            />
-                          </span>
-                        </center>
-                      </div>
-                      {/* /.info-box-content */}
-                    </div>
-                    {/* /.info-box */}
-                  </div>
-                  {/* /.col */}
-                  <div className="col-md-3 col-sm-6 col-xs-12">
-                    <div className="info-box info-bg">
-                      <div className="info-box-content">
-                        <center>
-                          <span className="info-box-text">
-                            Request Growth
-                            <br />
-                            From Last Week
-                          </span>
-                        </center>
-                        <center>
-                          {" "}
-                          <span className="info-box-number-down">
-                            10%{" "}
-                            <img src={up} alt="up" style={{ height: "28px" }} />
-                          </span>
-                        </center>
-                      </div>
-                      {/* /.info-box-content */}
-                    </div>
-                    {/* /.info-box */}
-                  </div>
-                  <div className="container d-flex justify-content-end">
-                    <div
-                      className="col-md-4 "
-                      style={{ paddingTop: "10px", paddingBottom: "10px" }}
-                    >
-                      <div className="row">
-                        <div className="col-md-8 col-xs-8 ">
-                          <input
-                            type="text"
-                            style={{
-                              backgroundColor:
-                                "rgb(245,245,245,60%) !important",
-                            }}
-                            className="form-control"
-                            id="Dates"
-                            name="Dates"
-                            placeholder="Dates"
-                            required
-                          />
-                        </div>
-                        {/* /.info-box */}
-                        <div className="col-md-2 col-xs-2">
-                          <img
-                            src={filter}
-                            alt="filter"
-                            className="img-responsive icon_3"
-                          />
-                        </div>
-                        <div className="col-md-2 col-xs-2">
-                          <img
-                            src={calander}
-                            alt="calander"
-                            className="img-responsive icon_3"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* /.col */}
-                </div>
-                {/* Main row */}
-                <div className="row">
-                  {/* Left col */}
-                  <div className="col-md-12">
-                    {/* MAP & BOX PANE */}
-                    {/* /.box */}
-                    <div className="row">
-                      <div className="col-md-6">
-                        {/* DIRECT CHAT */}
-                        {/*/.direct-chat */}
-                      </div>
-                      {/* /.col */}
-                      {/* /.col */}
-                    </div>
-                    {/* /.row */}
-                    {/* TABLE: LATEST ORDERS */}
-                    <div className="box box-info" style={{ borderTop: "none" }}>
-                      {/*                <div class="box-header with-border">
-                                            <h3 class="box-title">Latest Orders</h3>
-                        
-                                            <div class="box-tools pull-right">
-                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </div>*/}
-                      {/* /.box-header */}
-                      <div
-                        className="box-body"
-                        style={{ backgroundColor: "transparent !important" }}
-                      >
-                        <div className="table-responsive">
-                          <table className="table no-margin table-striped">
-                            <thead className="thead_11">
-                              <tr>
-                                <th>Doctors</th>
-                                <th>Labs</th>
-                                <th>Request</th>
-                                <th>Authentication</th>
-                                <th>Tests</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>Dr Kathy Jones</td>
-                                <td>Sanofi Genzyme</td>
-                                <td>30</td>
-                                <td>15</td>
-                                <td>
-                                  <span>
-                                    <img
-                                      src={down}
-                                      alt="down"
-                                      style={{ height: "14px" }}
-                                    />{" "}
-                                    &nbsp;00.1%
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Dr Sara Tom</td>
-                                <td>Sanofi Genzyme</td>
-                                <td>26</td>
-                                <td>20</td>
-                                <td>
-                                  <span>
-                                    <img
-                                      src={up}
-                                      alt="up"
-                                      style={{ height: "14px" }}
-                                    />{" "}
-                                    &nbsp;01.6%
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Dr Tom Josy</td>
-                                <td>LabCorp</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>
-                                  <span>
-                                    <img
-                                      src={up}
-                                      alt="up"
-                                      style={{ height: "14px" }}
-                                    />{" "}
-                                    &nbsp;05.6%
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Dr Martha Clerk</td>
-                                <td>Quest Diagnostics</td>
-                                <td>15</td>
-                                <td>5</td>
-                                <td>
-                                  <span>
-                                    <img
-                                      src={down}
-                                      alt="down"
-                                      style={{ height: "14px" }}
-                                    />{" "}
-                                    &nbsp;00.01%
-                                  </span>
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td>Dr Davyn J Paul</td>
-                                <td>LabCorp</td>
-                                <td>14</td>
-                                <td>8</td>
-                                <td>
-                                  <span>
-                                    <img
-                                      src={up}
-                                      alt="up"
-                                      style={{ height: "14px" }}
-                                    />{" "}
-                                    &nbsp;06.0%
-                                  </span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        {/* /.table-responsive */}
-                      </div>
-                      {/* /.box-body */}
-                      {/*                <div class="box-footer clearfix">
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
-                                        </div>*/}
-                      {/* /.box-footer */}
-                    </div>
-                    {/* /.box */}
-                  </div>
-                  {/* /.col */}
-                  {/* /.col */}
-                </div>
-              </div>
-              {/* /.row */}
-              <div className="row">
-                <div className="col-md-12">
-                  <div className="box">
-                    <div className="box-header with-border">
-                      {/*<h3 class="box-title">Weekly Delivery Report</h3>*/}
-                    </div>
-                    {/* /.box-header */}
-                    <div className="row">
-                      <div className="col-md-6">
-                        <img src={graph} alt="graph" className="img-fluid" />
-                        {/* BAR CHART */}
-                        {/* <div class="box-body">
-                                <div class="chart">
-                                    <canvas id="barChart" style="height:330px"></canvas>
-                                </div>
-                            </div> */}
-                        {/* /.box-body */}
-                        {/* /.box */}
-                        {/* AREA CHART */}
-                        <div className="box-body" style={{ display: "none" }}>
-                          <div className="chart">
-                            <canvas
-                              id="areaChart"
-                              style={{ height: "250px" }}
-                            />
-                          </div>
-                        </div>
-                        {/* /.box-body */}
-                        {/* /.box */}
-                        {/* DONUT CHART */}
-                        {/* /.box */}
-                      </div>
-                      {/* /.col (LEFT) */}
-                      <div className="col-md-6">
+            {/* Stats Cards */}
+            <div className="row mb-4">
+              {stats.map((stat, index) => (
+                <div className="col-md-3 col-sm-6 mb-3" key={index}>
+                  <div className="card h-100 shadow-sm">
+                    <div className="card-body text-center">
+                      <h6 className="card-subtitle mb-2 text-muted">
+                        {stat.title}
+                      </h6>
+                      <h3 className="card-title">
+                        {stat.value}
                         <img
-                          src={pie}
-                          alt="pie"
-                          className="img-fluid"
-                          width="60%"
+                          src={stat.trend === "up" ? up : down}
+                          alt={stat.trend}
+                          className="ms-2"
+                          style={{ height: "20px" }}
                         />
-                      </div>
-                      {/* /.col (RIGHT) */}
+                      </h3>
                     </div>
-                    {/* /.box-footer */}
                   </div>
-                  {/* /.box */}
+                </div>
+              ))}
+            </div>
+
+            {/* Date Filter */}
+            <div className="row mb-4 justify-content-end">
+              <div className="col-md-4">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Select date range"
+                  />
+                  <button className="btn btn-outline-secondary" type="button">
+                    <img src={filter} alt="Filter" style={{ height: "20px" }} />
+                  </button>
+                  <button className="btn btn-outline-secondary" type="button">
+                    <img
+                      src={calander}
+                      alt="Calendar"
+                      style={{ height: "20px" }}
+                    />
+                  </button>
                 </div>
               </div>
-              {/* /.col */}
-              {/* /.row */}
-              {/* /.row */}
-            </section>
+            </div>
+
+            {/* Doctors Table */}
+            <div className="row mb-4">
+              <div className="col-12">
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <div className="table-responsive">
+                      <table className="table table-hover">
+                        <thead className="table-light">
+                          <tr>
+                            <th>Doctors</th>
+                            <th>Labs</th>
+                            <th>Requests</th>
+                            <th>Authentication</th>
+                            <th>Change</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {doctorData.map((doctor, index) => (
+                            <tr key={index}>
+                              <td>{doctor.name}</td>
+                              <td>{doctor.lab}</td>
+                              <td>{doctor.requests}</td>
+                              <td>{doctor.auth}</td>
+                              <td>
+                                <img
+                                  src={doctor.trend === "up" ? up : down}
+                                  alt={doctor.trend}
+                                  style={{ height: "14px" }}
+                                />
+                                {doctor.change}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Charts Row */}
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">Monthly Requests</h5>
+                    <div style={{ height: "300px" }}>
+                      <Bar
+                        data={monthlyRequestsData}
+                        options={barChartOptions}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 mb-3">
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">Request Distribution</h5>
+                    <div style={{ height: "300px" }}>
+                      <Pie
+                        data={requestDistributionData}
+                        options={pieChartOptions}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
-      {/* End #main */}
-      {/* ======= Footer ======= */}
+
       <AdminFooter />
-      {/* End Footer */}
-      <a href="#top" className="back-to-top">
-        <i className="icofont-simple-up" />
-      </a>
     </div>
   );
 };
