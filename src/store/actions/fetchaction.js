@@ -10,7 +10,7 @@ export const FetchDoctor = () => {
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",
-      url: `${process.env.REACT_APP_API_URL}doctor`,
+      url: `${process.env.REACT_APP_API_URL}doctors`,
       headers: {
         Authorization: `Bearer ` + userInfo.token,
         "Content-Type": "application/json",
@@ -19,10 +19,11 @@ export const FetchDoctor = () => {
 
     const response = await axios(config)
       .then((response) => {
+        console.log(response);
         // props.mlicsDoctorList(response.data, "ADD_DOCTOR");
         dispatch({
           type: actionTypes.SET_DOCTORLIST,
-          mlicsDoctorLists: response.data,
+          mlicsDoctorLists: response.data.data,
         });
       })
       .catch((error) => {
@@ -80,5 +81,92 @@ export const FetchRequest = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+};
+
+export const deleteDoctor = (id) => {
+  return async (dispatch) => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user"));
+
+      await axios.delete(`${process.env.REACT_APP_API_URL}drdelete`, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+        data: {
+          id,
+        },
+      });
+
+      dispatch({
+        type: actionTypes.DELETE_DOCTOR,
+        doctorId: id,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+export const addDoctor = (doctorData) => async (dispatch) => {
+  try {
+    const userInfo = JSON.parse(localStorage.getItem("user"));
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}addDoctor`,
+      doctorData,
+      config
+    );
+
+    if (response.status === 200) {
+      dispatch(FetchDoctor()); // Refetch doctor list after adding
+    }
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateDoctor = (id, updatedData) => {
+  return async (dispatch) => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user"));
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}drupdate/${id}`,
+        updatedData,
+        config
+      );
+
+      if (response.status === 200) {
+        dispatch({
+          type: actionTypes.UPDATE_DOCTOR,
+          updatedDoctor: response.data.data,
+        });
+
+        // Optional: Refresh full list
+        dispatch(FetchDoctor());
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 };
