@@ -13,6 +13,30 @@ const DoctorReducer = (state = initialState, action) => {
         // mlicsDoctorList: [...state.mlicsDoctorList, action.doctorlsid],
       };
 
+    case actionTypes.DELETE_DOCTOR:
+      return {
+        ...state,
+        mlicsDoctorList: state.mlicsDoctorList.filter(
+          (doctor) => doctor.id !== action.doctorId
+        ),
+      };
+
+    case actionTypes.UPDATE_DOCTOR:
+      return {
+        ...state,
+        mlicsDoctorList: state.mlicsDoctorList.map((doctor) =>
+          doctor.id === action.updatedDoctor.id ? action.updatedDoctor : doctor
+        ),
+      };
+
+    case actionTypes.UPDATE_DOCTOR:
+      return {
+        ...state,
+        mlicsDoctorList: state.mlicsDoctorList.map((doctor) =>
+          doctor.id === action.updatedDoctor.id ? action.updatedDoctor : doctor
+        ),
+      };
+
     default:
       return state;
   }

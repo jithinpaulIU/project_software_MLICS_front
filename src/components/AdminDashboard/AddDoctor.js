@@ -5,6 +5,7 @@ import axios from "axios";
 import { customToast, CustomToastComponent } from "../../customToast";
 import { useDispatch } from "react-redux";
 import { FetchDoctor } from "../../store/actions/fetchaction";
+import { addDoctor } from "../../store/actions/fetchaction";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 
@@ -74,6 +75,7 @@ const AddDoctor = () => {
 const AddDoctorModal = ({ show, onHide, onDoctorAdded }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
 
   const initialValues = {
     firstName: "",
@@ -125,24 +127,12 @@ const AddDoctorModal = ({ show, onHide, onDoctorAdded }) => {
         role: values.role,
       };
 
-      const config = {
-        method: "post",
-        url: `${process.env.REACT_APP_API_URL}addDoctor`,
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-          "Content-Type": "application/json",
-        },
-        data: body,
-      };
+      await dispatch(addDoctor(body));
 
-      const response = await axios(config);
-
-      if (response.status === 200) {
-        customToast("Doctor added successfully", "success");
-        resetForm();
-        onHide();
-        onDoctorAdded();
-      }
+      customToast("Doctor added successfully", "success");
+      resetForm();
+      onHide();
+      onDoctorAdded(); // Optional; already refetching in Redux
     } catch (error) {
       console.error("Error adding doctor:", error);
       customToast(
