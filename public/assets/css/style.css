@@ -1900,6 +1900,10 @@ section {
 .PhoneInputInput {
     flex: 1 1;
     border: none;
+    line-height: 2.1 !important;
+    margin-right: -11px !important;
+    border-color: #1977cc !important;
+    
 }
 
 .white-btn {

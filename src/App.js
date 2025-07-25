@@ -6,13 +6,13 @@ import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { ProgressBar } from "react-fetch-progressbar";
 
 import ProtectiveRoute from "./Proute";
-// import ProtectiveRoute1 from "./ProtectedRoute1";
+import ProtectiveRoute1 from "./ProtectedRoute1";
 import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import AddDoctor from "./components/AdminDashboard/AddDoctor";
-// import ContactUS from "./components/DoctorDashboard/ContactUs";
+import ContactUS from "./components/DoctorDashboard/ContactUs";
 import Labs from "./components/AdminDashboard/Labs";
 import Request from "./components/AdminDashboard/Request";
-// import DrDashboard from "./components/DoctorDashboard/DrDashboard";
+import DrDashboard from "./components/DoctorDashboard/DrDashboard";
 // import DrLabs from "./components/DoctorDashboard/DrLabs";
 // import DrRequest from "./components/DoctorDashboard/DrRequest";
 // import Patienttabs from "./components/DoctorDashboard/PatientTabs";
@@ -35,14 +35,14 @@ function App() {
           />
 
           {/* Protected Doctor Routes */}
-          {/* <Route
+          <Route
             path="/drdashboard/*"
             element={
               <ProtectiveRoute1>
                 <DrContainer />
               </ProtectiveRoute1>
             }
-          /> */}
+          />
 
           {/* Public Routes */}
           <Route path="/*" element={<DefaultContainer />} />
@@ -60,16 +60,16 @@ const DefaultContainer = () => (
   </Routes>
 );
 
-// const DrContainer = () => (
-//   <Routes>
-//     <Route index element={<DrDashboard />} />
-//     <Route path="contactus" element={<ContactUS />} />
-//     <Route path="drlabs" element={<DrLabs />} />
-//     <Route path="drrequest" element={<DrRequest />} />
-//     <Route path="patientTabs" element={<Patienttabs />} />
-//     <Route path="*" element={<Navigate to="/drdashboard" replace />} />
-//   </Routes>
-// );
+const DrContainer = () => (
+  <Routes>
+    <Route index element={<DrDashboard />} />
+    <Route path="contactus" element={<ContactUS />} />
+    {/* <Route path="drlabs" element={<DrLabs />} />
+    <Route path="drrequest" element={<DrRequest />} />
+    <Route path="patientTabs" element={<Patienttabs />} /> */}
+    <Route path="*" element={<Navigate to="/drdashboard" replace />} />
+  </Routes>
+);
 
 const AppContainer = () => (
   <Routes>

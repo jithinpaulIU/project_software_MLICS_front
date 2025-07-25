@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -17,6 +17,8 @@ import TextField from "@mui/material/TextField";
 // Phone Input
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -38,30 +40,52 @@ const ModalContent = styled(Box)(({ theme }) => ({
   maxWidth: "90%",
 }));
 
-const UpdateDoctorModel = ({ open, onClose }) => {
-  const [phoneValue, setPhoneValue] = useState();
+const UpdateDoctorModel = ({ open, onClose, doctorData, refreshData }) => {
+  const [phoneValue, setPhoneValue] = useState("");
   const dispatch = useDispatch();
-
-  const mlicsSelectedDoctor = useSelector(
-    (state) => state.DoctorUpdate.mlicsSelectedDoctor
-  );
 
   const userInfo = JSON.parse(localStorage.getItem("user"));
 
+  // Initialize phone value when doctorData changes
+  useEffect(() => {
+    if (doctorData) {
+      // Combine country code and phone number for the phone input
+      const fullPhoneNumber = doctorData.country_code
+        ? `${doctorData.country_code}${doctorData.phone}`
+        : doctorData.phone;
+      setPhoneValue(fullPhoneNumber);
+    }
+  }, [doctorData]);
+
   const updateDoctor = async (fields) => {
     try {
+      // Parse the phone number into country code and phone number
+      let countryCode = "";
+      let phoneNumber = phoneValue;
+
+      let phone = doctorData.phone;
+
+      if (phoneNumber) {
+        const parsedNumber = parsePhoneNumberFromString(phoneNumber);
+        if (parsedNumber) {
+          countryCode = `+${parsedNumber.countryCallingCode}`;
+          phone = parsedNumber.nationalNumber;
+        }
+      }
+
       const body = {
         firstName: fields.firstName,
         lastName: fields.lastName,
+        username: doctorData?.username,
         email: fields.email,
-        mobileNo: phoneValue,
-        password: fields.password,
-        SSN: fields.ssn,
+        phone: phone,
+        countryCode: countryCode,
+        ssn: fields.ssn,
       };
 
       const config = {
         method: "put",
-        url: `${process.env.REACT_APP_API_URL}doctor/${mlicsSelectedDoctor.id}`,
+        url: `${process.env.REACT_APP_API_URL}drupdate/${doctorData?.id}`,
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
           "Content-Type": "application/json",
@@ -72,7 +96,7 @@ const UpdateDoctorModel = ({ open, onClose }) => {
       const response = await axios(config);
       if (response.status === 200) {
         customToast("Doctor Updated", "success");
-        dispatch(FetchDoctor());
+        refreshData(); // Use the passed refreshData prop
         onClose();
       }
     } catch (err) {
@@ -96,12 +120,12 @@ const UpdateDoctorModel = ({ open, onClose }) => {
           <CssBaseline />
           <Box sx={{ mt: 2 }}>
             <Formik
+              enableReinitialize
               initialValues={{
-                firstName: mlicsSelectedDoctor?.firstName || "",
-                lastName: mlicsSelectedDoctor?.lastName || "",
-                email: mlicsSelectedDoctor?.email || "",
-                password: "",
-                ssn: mlicsSelectedDoctor?.SSN || "",
+                firstName: doctorData?.firstName || "",
+                lastName: doctorData?.lastName || "",
+                email: doctorData?.email || "",
+                ssn: doctorData?.ssn || "",
               }}
               validationSchema={Yup.object().shape({
                 firstName: Yup.string().required("First Name is required"),
@@ -180,8 +204,9 @@ const UpdateDoctorModel = ({ open, onClose }) => {
                       Phone Number
                     </Typography>
                     <PhoneInput
+                      international
                       defaultCountry="US"
-                      value={mlicsSelectedDoctor?.mobileNo || phoneValue}
+                      value={phoneValue}
                       onChange={setPhoneValue}
                       style={{ width: "100%" }}
                     />
