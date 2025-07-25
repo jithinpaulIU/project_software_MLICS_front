@@ -169,6 +169,7 @@ function Login() {
                           color: "#FFFFFF",
                           borderRadius: "50px",
                           padding: "7px 20px",
+                          textTransform: "none",
                         }}
                       >
                         {loader ? "Logging in..." : "Login"}
