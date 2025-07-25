@@ -169,6 +169,7 @@ const DoctorList = () => {
     lastName: doctor.last_name,
     Phone: doctor.country_code + " - " + doctor.phone,
     Email: doctor.email,
+    username: doctor.username,
   }));
 
   return (
