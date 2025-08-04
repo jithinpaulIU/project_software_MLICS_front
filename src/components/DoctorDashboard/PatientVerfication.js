@@ -23,7 +23,7 @@ const PatientVerification = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL2}user/validateuseremail`,
+        `${process.env.REACT_APP_API_URL2}validateuseremail`,
         {
           email: fields.email,
           SSN: fields.ssn,
@@ -35,9 +35,8 @@ const PatientVerification = () => {
           },
         }
       );
-      console.log("response", response);
 
-      if (response.status === 500) {
+      if (response.status === 200) {
         setModalShow(true);
       }
     } catch (error) {
