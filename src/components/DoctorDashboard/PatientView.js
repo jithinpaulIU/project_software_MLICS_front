@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import MultiSelect from "react-multi-select-component";
+import { MultiSelect } from "react-multi-select-component";
 
 import DrFooter from "./DrFooter";
 import DrHeader from "./DrHeader";
@@ -9,9 +9,9 @@ import PatientDataList from "./PatientDataList";
 
 import { customToast, CustomToastComponent } from "../../customToast";
 
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const PatientViews = () => {
   const [listofLabs, setListofLabs] = useState([]);
@@ -26,7 +26,7 @@ const PatientViews = () => {
       const userInfo = JSON.parse(localStorage.getItem("user"));
       const config = {
         method: "get",
-        url: `${process.env.REACT_APP_API_URL}lab`,
+        url: `${process.env.REACT_APP_API_URL2}labs`,
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
           "Content-Type": "application/json",
@@ -34,9 +34,10 @@ const PatientViews = () => {
       };
 
       const response = await axios(config);
-      setListofLabs(response.data);
+      console.log("response.data", response.data);
+      setListofLabs(response?.data?.data);
 
-      const selectOptions = response.data.map((lab, index) => ({
+      const selectOptions = response.data.data.map((lab, index) => ({
         id: index + 1,
         label: lab.name,
         value: lab.id,
