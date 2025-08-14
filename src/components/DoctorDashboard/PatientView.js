@@ -1,85 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { MultiSelect } from "react-multi-select-component";
+
 import DrFooter from "./DrFooter";
 import DrHeader from "./DrHeader";
-import { Link } from "react-router-dom";
-
-import axios from "axios";
-import MultiSelect from "react-multi-select-component";
-
-// import DrLabLists from "./DrLabLists";
-
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-
-import { customToast, CustomToastComponent } from "../../customToast";
 import PatientDataList from "./PatientDataList";
 
-// import Loaders from "./Loader";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { customToast, CustomToastComponent } from "../../customToast";
 
-const PatientViews = (props) => {
-  let [listofLabs, setlistofLabs] = useState([]);
-  //   const [value, setValue] = React.useState(listofLabs[0]);
-  // const [labid, setlabid] = useState("");
-  const [testList, settestList] = useState([]);
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+const PatientViews = () => {
+  const [listofLabs, setListofLabs] = useState([]);
+  const [testList, setTestList] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedLabs, setSelectedLabs] = useState([]);
   const [options, setOptions] = useState([]);
   const [loader, setLoader] = useState(false);
 
-  const fetchData = React.useCallback(async () => {
-    let userInfo = localStorage.getItem("user");
-    userInfo = JSON.parse(userInfo);
-    var config = {
-      method: "get",
-      url: `${process.env.REACT_APP_API_URL}lab`,
-      headers: {
-        Authorization: `Bearer ` + userInfo.token,
-        "Content-Type": "application/json",
-      },
-    };
+  const fetchData = useCallback(async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user"));
+      const config = {
+        method: "get",
+        url: `${process.env.REACT_APP_API_URL2}labs`,
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+      };
 
-    await axios(config)
-      .then((response) => {
-        setlistofLabs(response.data);
-        const selectoptions = response.data.map((LablistsItem, index) => {
-          const container = {};
-          let count = index + 1;
-          container.id = count;
-          container.label = LablistsItem.name;
-          container.value = LablistsItem.id;
-          return container;
-        });
-        setOptions(selectoptions);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      const response = await axios(config);
+      console.log("response.data", response.data);
+      setListofLabs(response?.data?.data);
+
+      const selectOptions = response.data.data.map((lab, index) => ({
+        id: index + 1,
+        label: lab.name,
+        value: lab.id,
+      }));
+
+      setOptions(selectOptions);
+    } catch (error) {
+      console.error("Error fetching lab data:", error);
+    }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div>
-      {/* ======= Top Bar ======= */} {/* ======= Header ======= */}
       <DrHeader />
-      {/* End Header */}
       <main id="main">
-        {/* ======= Breadcrumbs Section ======= */}
         <section className="breadcrumbs">
           <div className="container">
             <div className="d-flex justify-content-between align-items-center">
               <h2>Patient Details</h2>
               <Link to="/drdashboard" className="nav-link">
-                <ArrowBackIcon></ArrowBackIcon>
+                <ArrowBackIcon />
               </Link>
             </div>
           </div>
         </section>
+
         <div className="container mt-5 pl-0 d-flex row justify-content-center">
-          {" "}
           <MultiSelect
             options={options}
             value={selected}
@@ -88,44 +77,32 @@ const PatientViews = (props) => {
             className="noBorder col-md-6"
           />
           <Button
+            variant="contained"
+            color="primary"
             onClick={() => setSelectedLabs(selected)}
-            className="modal-btn"
+            className="modal-btn ml-2"
           >
             View Results
           </Button>
         </div>
-        <div className="container my-2 d-flex justify-content-center"></div>
 
         <div className="container">
           <Grid container spacing={3}>
             {selectedLabs.length > 0 ? (
-              selectedLabs.map((item, i) => {
-                return (
-                  <Grid
-                    item
-                    spacing={15}
-                    justify="right"
-                    alignItems="right"
-                    xs={12}
-                  >
-                    <PatientDataList
-                      labId={item.value}
-                      lab={item.label}
-                      key={item.value}
-                    />
-                  </Grid>
-                );
-              })
+              selectedLabs.map((item) => (
+                <Grid item xs={12} key={item.value}>
+                  <PatientDataList labId={item.value} lab={item.label} />
+                </Grid>
+              ))
             ) : (
-              <p> </p>
+              <p>No lab selected.</p>
             )}
           </Grid>
         </div>
       </main>
-      {/* End #main */}
-      {/* ======= Footer ======= */}
+
       <DrFooter />
-      {/* End Footer */}
+
       <a href="#top" className="back-to-top">
         <i className="icofont-simple-up" />
       </a>

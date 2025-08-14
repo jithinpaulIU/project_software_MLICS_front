@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-
 import axios from "axios";
-
 import { CustomToastComponent } from "../../customToast";
-
 import DrFooter from "./DrFooter";
 import DrHeader from "./DrHeader";
 import DrRequestList from "./DrRequestList";
@@ -11,50 +8,56 @@ import { useSelector, useDispatch } from "react-redux";
 import * as actionTypes from "../../store/actions/index";
 
 const DrRequest = (props) => {
-  let [reqList, setreqList] = useState([]);
+  const [reqList, setReqList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const micsDrRequestList = useSelector(
-    (state) => state.DrRequestReducer.micsDrRequestList,
+    (state) => state.DrRequestReducer.micsDrRequestList
   );
 
   const dispatch = useDispatch();
 
-  const fetchData = React.useCallback(async () => {
-    let userInfo = localStorage.getItem("user");
-    userInfo = JSON.parse(userInfo);
-    var config = {
-      method: "get",
-      url: `${process.env.REACT_APP_API_URL2}request`,
-      headers: {
-        Authorization: `Bearer ` + userInfo.token,
-        "Content-Type": "application/json",
-      },
-    };
-    await axios(config)
-      .then((response) => {
-        setreqList(response.data);
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-        dispatch({
-          type: actionTypes.GET_DRREQUEST,
-          micsDrRequestList: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user"));
+
+      const config = {
+        method: "get",
+        url: `${process.env.REACT_APP_API_URL2}request`,
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios(config);
+      setReqList(response.data);
+
+      dispatch({
+        type: actionTypes.GET_DRREQUEST,
+        micsDrRequestList: response.data,
       });
-  });
+    } catch (err) {
+      console.error("Error fetching request data:", err);
+      setError(err.message || "Failed to fetch data");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div>
-      {/* ======= Top Bar ======= */} {/* ======= Header ======= */}
       <DrHeader />
-      {/* End Header */}
+
       <main id="main">
-        {/* ======= Breadcrumbs Section ======= */}
         <section className="breadcrumbs">
           <div className="container">
             <div className="d-flex justify-content-between align-items-center">
@@ -62,17 +65,22 @@ const DrRequest = (props) => {
             </div>
           </div>
         </section>
-        {/* End Breadcrumbs Section */}
-        <section className="inner-page  nopadding"></section>
-        <DrRequestList DrRequestList={reqList} FetchData={fetchData} />
+
+        <section className="inner-page nopadding">
+          {isLoading && <p>Loading requests...</p>}
+          {error && <p className="text-danger">{error}</p>}
+          {!isLoading && !error && (
+            <DrRequestList DrRequestList={reqList} FetchData={fetchData} />
+          )}
+        </section>
       </main>
-      {/* End #main */}
-      {/* ======= Footer ======= */}
+
       <DrFooter />
-      {/* End Footer */}
+
       <a href="#top" className="back-to-top">
         <i className="icofont-simple-up" />
       </a>
+
       <CustomToastComponent />
     </div>
   );

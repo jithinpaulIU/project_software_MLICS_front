@@ -14,16 +14,18 @@ import OTPInput from "otp-input-react";
 const PatientVerification = () => {
   const [modalShow, setModalShow] = useState(false);
   const [ssnValue, setSsnValue] = useState("");
+  const [patientEmail, setPatientEmail] = useState("");
   const navigate = useNavigate();
 
   const userInfo = JSON.parse(localStorage.getItem("user"));
 
   const validate = async (fields) => {
     setSsnValue(fields.ssn);
+    setPatientEmail(fields.email);
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL2}user/validateuseremail`,
+        `${process.env.REACT_APP_API_URL2}validateuseremail`,
         {
           email: fields.email,
           SSN: fields.ssn,
@@ -35,9 +37,8 @@ const PatientVerification = () => {
           },
         }
       );
-      console.log("response", response);
 
-      if (response.status === 500) {
+      if (response.status === 200) {
         setModalShow(true);
       }
     } catch (error) {
@@ -139,24 +140,29 @@ const PatientVerification = () => {
           onHide={() => setModalShow(false)}
           ssnvalue={ssnValue}
           navigate={navigate}
+          patientEmail={patientEmail}
         />
       </div>
     </Container>
   );
 };
 
-const OtpModal = ({ show, onHide, ssnvalue, navigate }) => {
+const OtpModal = ({ show, onHide, ssnvalue, navigate, patientEmail }) => {
   const [otpValue, setOtpValue] = useState("");
   const [otpMessage, setOtpMessage] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("user"));
 
   const verifyOtp = async () => {
+    setOtpMessage(false);
+    setOtpValue("");
+
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL2}validatePatient`,
+        `${process.env.REACT_APP_API_URL2}authenticateuser`,
         {
           otp: otpValue,
           SSN: ssnvalue,
+          email: patientEmail,
         },
         {
           headers: {
@@ -165,8 +171,9 @@ const OtpModal = ({ show, onHide, ssnvalue, navigate }) => {
           },
         }
       );
+      console.log("response", response);
 
-      if (response.status === 200 && response.data.token) {
+      if (response.status === 200 && response.data.data.BearerToken) {
         localStorage.setItem(
           "patienttoken",
           JSON.stringify({
@@ -216,6 +223,7 @@ const OtpModal = ({ show, onHide, ssnvalue, navigate }) => {
             <Button
               variant="contained"
               sx={{
+                alignItems: "center",
                 backgroundColor: "#1977cc",
                 color: "#FFFFFF",
                 borderRadius: "50px",
@@ -227,7 +235,9 @@ const OtpModal = ({ show, onHide, ssnvalue, navigate }) => {
               Verify
             </Button>
 
-            {otpMessage && <p style={{ color: "red" }}>Wrong OTP</p>}
+            {otpMessage && (
+              <p style={{ color: "red", paddingTop: "5px" }}>Wrong OTP</p>
+            )}
           </div>
         </Container>
       </Modal.Body>
