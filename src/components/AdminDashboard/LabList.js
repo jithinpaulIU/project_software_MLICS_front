@@ -7,18 +7,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/react";
 import ClipLoader from "react-spinners/ClipLoader";
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
+import { Box, Typography, useTheme } from "@mui/material";
 import { FetchLab } from "../../store/actions/fetchaction";
 import { CustomToastComponent, customToast } from "../../customToast";
 import UpdateLabModel from "./UpdateLab";
 
 const override = css`
   display: block;
-  margin: 0 auto;
+  margin: auto;
   border-color: #cad3e8;
 `;
 
 const LabList = () => {
+  const theme = useTheme();
   const [selectionData, setSelectionData] = useState(null);
   const [modalShow, setModalShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,7 @@ const LabList = () => {
     try {
       setLoading(true);
       const userInfo = JSON.parse(localStorage.getItem("user") || "{}");
-      
+
       await axios.delete(`${process.env.REACT_APP_API_URL}lab/${id}`, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -90,14 +91,35 @@ const LabList = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="200px"
+      >
         <ClipLoader loading={true} css={override} size={50} />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ height: 400, width: "100%", mt: 4 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "auto",
+        maxWidth: "calc(100vw - 64px)",
+        width: "auto",
+        mx: "auto",
+        p: 3,
+        bgcolor: "background.paper",
+        borderRadius: 2,
+        boxShadow: 1,
+        [theme.breakpoints.up("lg")]: {
+          maxWidth: 1300,
+        },
+      }}
+    >
       {mlicsLabList.length > 0 ? (
         <>
           <DataGrid
@@ -121,7 +143,12 @@ const LabList = () => {
           <CustomToastComponent />
         </>
       ) : (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
           <ClipLoader loading={true} css={override} size={50} />
         </Box>
       )}

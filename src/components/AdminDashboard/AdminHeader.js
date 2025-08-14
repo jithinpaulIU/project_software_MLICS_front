@@ -1,13 +1,20 @@
-import { Fragment } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Fragment, useCallback } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Auth from "../../auth";
 import MLICS from "../../img/mics.png";
 
 const AdminHeader = () => {
-  const handleLogout = () => {
-    Auth.logout();
-    localStorage.clear();
-  };
+  const navigate = useNavigate();
+
+  const handleLogout = useCallback(
+    (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      navigate("/", { replace: true });
+      window.location.reload(); // Ensure complete reset
+    },
+    [navigate]
+  );
 
   return (
     <Fragment>

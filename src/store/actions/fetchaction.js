@@ -38,7 +38,7 @@ export const FetchLab = () => {
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",
-      url: `${process.env.REACT_APP_API_URL}lab`,
+      url: `${process.env.REACT_APP_API_URL}labs`,
       headers: {
         Authorization: `Bearer ` + userInfo.token,
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const FetchLab = () => {
       .then((response) => {
         dispatch({
           type: actionTypes.GET_LABLIST,
-          mlicsLabList: response.data,
+          mlicsLabList: response.data.data,
         });
       })
       .catch((error) => {
