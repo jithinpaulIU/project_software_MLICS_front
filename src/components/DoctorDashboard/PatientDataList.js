@@ -206,8 +206,9 @@ const LabResultsTable = ({ labId, lab }) => {
         token: userToken.token,
         labid: labId,
       };
+      console.log("body", body);
 
-      const response = await axios.post(
+      const response = await axios.get(
         `${process.env.REACT_APP_API_URL2}testList`,
         body,
         config
