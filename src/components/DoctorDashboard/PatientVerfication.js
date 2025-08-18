@@ -171,13 +171,13 @@ const OtpModal = ({ show, onHide, ssnvalue, navigate, patientEmail }) => {
           },
         }
       );
-      console.log("response", response);
+      console.log("response2", response);
 
-      if (response.status === 200 && response.data.data.BearerToken) {
+      if (response.status === 200 && response?.data?.data?.BearerToken) {
         localStorage.setItem(
           "patienttoken",
           JSON.stringify({
-            token: response.data.token,
+            token: response.data.data.BearerToken,
           })
         );
         navigate("/drdashboard/patientTabs");
