@@ -5,7 +5,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { styled } from "@mui/material/styles";
 import {
   Box,
-  Collapse,
   IconButton,
   Table,
   TableBody,
@@ -15,16 +14,8 @@ import {
   TableRow,
   Typography,
   Paper,
-  Divider,
-  Button,
 } from "@mui/material";
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  PictureAsPdf,
-  Image,
-  Movie,
-} from "@mui/icons-material";
+import { PictureAsPdf, Image, Movie } from "@mui/icons-material";
 import { Modal } from "react-bootstrap";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
@@ -38,7 +29,7 @@ const StyledTableRow = styled(TableRow)({
 
 const IframeModal = ({ show, onHide, url, resultType }) => {
   const renderResultContent = () => {
-    if (!url) return <p>No result available</p>;
+    if (!url) return <Typography p={3}>No result available</Typography>;
 
     const iframeProps = {
       position: "fixed",
@@ -46,29 +37,18 @@ const IframeModal = ({ show, onHide, url, resultType }) => {
       name: "imgbox",
       id: "imgbox",
       onContextMenu: (e) => e.preventDefault(),
+      style: { border: "none" },
     };
 
     switch (resultType) {
       case "pdf":
-        return (
-          <iframe {...iframeProps} width="775" height="650" scrolling="no" />
-        );
+        return <iframe {...iframeProps} width="100%" height="800px" />;
       case "image":
-        return (
-          <iframe {...iframeProps} width="750" height="650" border="2px" />
-        );
+        return <iframe {...iframeProps} width="100%" height="800px" />;
       case "video":
-        return <iframe {...iframeProps} width="100%" height="100%" />;
+        return <iframe {...iframeProps} width="100%" height="800px" />;
       default:
-        return (
-          <iframe
-            {...iframeProps}
-            width="750"
-            height="600"
-            frameBorder="0"
-            scrolling="no"
-          />
-        );
+        return <iframe {...iframeProps} width="100%" height="800px" />;
     }
   };
 
@@ -76,16 +56,19 @@ const IframeModal = ({ show, onHide, url, resultType }) => {
     <Modal
       show={show}
       onHide={onHide}
-      size="lg"
+      size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      style={{ maxWidth: "95vw", width: "100%" }}
     >
       <Modal.Header closeButton className="headerBg">
         <Modal.Title className="modal-title w-100 text-center">
-          Result
+          Test Result
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>{renderResultContent()}</Modal.Body>
+      <Modal.Body style={{ padding: 0, height: "80vh" }}>
+        {renderResultContent()}
+      </Modal.Body>
     </Modal>
   );
 };
@@ -102,17 +85,17 @@ const TestRow = ({ row }) => {
   };
 
   const getResultIcon = () => {
-    if (!row.url) return <span>N/A</span>;
+    if (!row.url) return <Typography variant="body2">N/A</Typography>;
 
     switch (row.resultType) {
       case "pdf":
-        return <PictureAsPdf />;
+        return <PictureAsPdf color="error" />;
       case "image":
-        return <Image />;
+        return <Image color="primary" />;
       case "video":
-        return <Movie />;
+        return <Movie color="secondary" />;
       default:
-        return <PictureAsPdf />;
+        return <PictureAsPdf color="error" />;
     }
   };
 
@@ -124,7 +107,11 @@ const TestRow = ({ row }) => {
         <TableCell align="left">{row.type}</TableCell>
         <TableCell align="left">{row.status}</TableCell>
         <TableCell align="left">
-          <IconButton onClick={handleShowResult} disabled={!row.url}>
+          <IconButton
+            onClick={handleShowResult}
+            disabled={!row.url}
+            size="large"
+          >
             {getResultIcon()}
           </IconButton>
         </TableCell>
@@ -201,76 +188,130 @@ const LabResultsTable = ({ labId }) => {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      {isLoading && <Typography>Loading results...</Typography>}
+    <Box sx={{ width: "100%", p: 0, m: 0 }}>
+      {isLoading && (
+        <Box display="flex" justifyContent="center" p={4}>
+          <Typography variant="h6">Loading results...</Typography>
+        </Box>
+      )}
 
       {data.labDetails && (
-        <Box sx={{ mb: 4, p: 1, border: "1px solid #ddd", borderRadius: 1 }}>
-          <Typography variant="h5" gutterBottom>
+        <Box
+          sx={{
+            mb: 4,
+            p: 3,
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
             Lab Details
           </Typography>
-          <Typography>
-            <strong>Name:</strong> {data.labDetails.name}
-          </Typography>
-          <Typography>
-            <strong>Address:</strong> {data.labDetails.address}
-          </Typography>
-          <Typography>
-            <strong>Email:</strong> {data.labDetails.email}
-          </Typography>
-          <Typography>
-            <strong>Phone:</strong> {data.labDetails.phone}
-          </Typography>
-          <Typography>
-            <strong>Status:</strong> {data.labDetails.status}
-          </Typography>
-          <Typography>
-            <strong>Total Requests:</strong> {data.labDetails.totalRequests}
-          </Typography>
-          <Typography>
-            <strong>Success Rate:</strong> {data.labDetails.successRate}%
-          </Typography>
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+            gap={2}
+          >
+            <Typography>
+              <strong>Name:</strong> {data.labDetails.name}
+            </Typography>
+            <Typography>
+              <strong>Address:</strong> {data.labDetails.address}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {data.labDetails.email}
+            </Typography>
+            <Typography>
+              <strong>Phone:</strong> {data.labDetails.phone}
+            </Typography>
+            <Typography>
+              <strong>Status:</strong> {data.labDetails.status}
+            </Typography>
+            <Typography>
+              <strong>Total Requests:</strong> {data.labDetails.totalRequests}
+            </Typography>
+            <Typography>
+              <strong>Success Rate:</strong> {data.labDetails.successRate}%
+            </Typography>
+          </Box>
         </Box>
       )}
 
       {data.patientDetails && (
-        <Box sx={{ mb: 4, p: 2, border: "1px solid #ddd", borderRadius: 1 }}>
-          <Typography variant="h5" gutterBottom>
+        <Box
+          sx={{
+            mb: 4,
+            p: 3,
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
             Patient Details
           </Typography>
-          <Typography>
-            <strong>SSN:</strong> {data.patientDetails.patientSSN}
-          </Typography>
-          <Typography>
-            <strong>Email:</strong> {data.patientDetails.patientEmail}
-          </Typography>
+          <Box display="flex" gap={4}>
+            <Typography>
+              <strong>SSN:</strong> {data.patientDetails.patientSSN}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {data.patientDetails.patientEmail}
+            </Typography>
+          </Box>
         </Box>
       )}
 
       {data.testList.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Typography variant="h5" sx={{ p: 2 }}>
+        <Box
+          sx={{
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+            overflow: "hidden",
+          }}
+        >
+          <Typography variant="h5" sx={{ p: 3, fontWeight: "bold" }}>
             Test Results
           </Typography>
-          <Table aria-label="test results table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">SSN</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Test Type</TableCell>
-                <TableCell align="left">Status</TableCell>
-                <TableCell align="left">Result</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.testList.map((row) => (
-                <TestRow key={row.testID} row={row} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+          <TableContainer>
+            <Table aria-label="test results table" size="medium">
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    SSN
+                  </TableCell>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    Email
+                  </TableCell>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    Test Type
+                  </TableCell>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    Status
+                  </TableCell>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    Result
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.testList.map((row) => (
+                  <TestRow key={row.testID} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       ) : (
-        !isLoading && <Typography>No test results found</Typography>
+        !isLoading && (
+          <Box display="flex" justifyContent="center" p={4}>
+            <Typography variant="h6">No test results found</Typography>
+          </Box>
+        )
       )}
     </Box>
   );
