@@ -35,6 +35,7 @@ export const FetchDoctor = () => {
 export const FetchLab = () => {
   return async (dispatch) => {
     let userInfo = localStorage.getItem("user");
+    console.log("hello labs", `${process.env.REACT_APP_API_URL}labs`);
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",

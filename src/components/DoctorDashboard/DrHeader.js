@@ -33,6 +33,7 @@ const DrHeader = memo(() => {
               height="40"
               loading="lazy"
               decoding="async"
+              style={{ cursor: "pointer" }}
             />
           </Link>
         </h1>
@@ -40,27 +41,49 @@ const DrHeader = memo(() => {
         <nav className="nav-menu d-none d-lg-block">
           <ul className="d-flex align-items-center gap-3 mb-0">
             <li className="nav-item">
-              <NavLink to="/drdashboard" className={navLinkClass} end>
+              <NavLink
+                to="/drdashboard"
+                className={navLinkClass}
+                end
+                style={{ cursor: "pointer" }}
+              >
                 Home
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/drdashboard/drlabs" className={navLinkClass}>
+              <NavLink
+                to="/drdashboard/drlabs"
+                className={navLinkClass}
+                style={{ cursor: "pointer" }}
+              >
                 Labs
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/drdashboard/drrequest" className={navLinkClass}>
+              <NavLink
+                to="/drdashboard/drrequest"
+                className={navLinkClass}
+                style={{ cursor: "pointer" }}
+              >
                 Request
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/drdashboard/contactus" className={navLinkClass}>
+              <NavLink
+                to="/drdashboard/contactus"
+                className={navLinkClass}
+                style={{ cursor: "pointer" }}
+              >
                 Contact
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/" onClick={handleLogout} className={navLinkClass}>
+              <NavLink
+                to="/"
+                onClick={handleLogout}
+                className={navLinkClass}
+                style={{ cursor: "pointer" }}
+              >
                 Logout
               </NavLink>
             </li>

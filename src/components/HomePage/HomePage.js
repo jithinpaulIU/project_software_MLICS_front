@@ -83,21 +83,21 @@ const AboutSection = () => {
   const features = [
     {
       icon: "bx-fingerprint",
-      title: "Lorem Ipsum",
+      title: "Instant OTP Authentication",
       description:
-        "Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi",
+        "Secure, one-time passwords sent directly to patients for immediate authorization",
     },
     {
       icon: "bx-gift",
-      title: "Nemo Enim",
+      title: "Centralized Results Access",
       description:
-        "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis",
+        "View all patient lab results from multiple providers in one dashboard",
     },
     {
       icon: "bx-atom",
-      title: "Dine Pad",
+      title: "HIPAA-Compliant Security",
       description:
-        "Explicabo est voluptatum asperiores consequatur magnam. Et veritatis odit.",
+        "End-to-end encryption ensures patient data remains protected",
     },
   ];
 
@@ -109,12 +109,11 @@ const AboutSection = () => {
             {/* Video placeholder */}
           </div>
           <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
-            <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
+            <h3>Streamline Patient Care with Seamless Lab Integration</h3>
             <p>
-              Esse voluptas cumque vel exercitationem. Reiciendis est hic
-              accusamus. Non ipsam et sed minima temporibus laudantium. Soluta
-              voluptate sed facere corporis dolores excepturi. Libero laboriosam
-              sint et id nulla tenetur. Suscipit aut voluptate.
+              Connect your practice to diagnostic labs instantly. Access results
+              faster, reduce administrative work, and provide better patient
+              care.
             </p>
             {features.map((feature, index) => (
               <FeatureIconBox
