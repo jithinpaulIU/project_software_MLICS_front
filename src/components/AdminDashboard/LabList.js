@@ -60,7 +60,7 @@ const LabList = () => {
     slNo: index + 1,
     Name: LablistsItem.name,
     Address: LablistsItem.address,
-    Phone: LablistsItem.mobileNo,
+    Phone: LablistsItem.phone,
     Email: LablistsItem.email,
   }));
 
