@@ -65,7 +65,7 @@ export const FetchRequest = () => {
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",
-      url: `${process.env.REACT_APP_API_URL}request`,
+      url: `${process.env.REACT_APP_API_URL}getDoctorRequests`,
       headers: {
         Authorization: `Bearer ` + userInfo.token,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export const FetchRequest = () => {
       .then((response) => {
         dispatch({
           type: actionTypes.GET_REQUESTLIST,
-          requestList: response.data,
+          requestList: response.data.data,
         });
       })
       .catch((error) => {
