@@ -14,71 +14,42 @@ import {
   TableRow,
   Typography,
   Paper,
-  Grid,
-  Chip,
-  CircularProgress,
-  Divider,
 } from "@mui/material";
-import {
-  PictureAsPdf,
-  Image,
-  Movie,
-  Visibility,
-  Person,
-  Science,
-  Assignment,
-} from "@mui/icons-material";
+import { PictureAsPdf, Image, Movie } from "@mui/icons-material";
 import { Modal } from "react-bootstrap";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+const StyledTableRow = styled(TableRow)({
+  "& > *": {
+    borderBottom: "unset",
   },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-const StatusChip = ({ status }) => {
-  const getStatusColor = () => {
-    switch (status?.toLowerCase()) {
-      case "completed":
-        return "success";
-      case "pending":
-        return "warning";
-      case "processing":
-        return "info";
-      case "failed":
-        return "error";
-      default:
-        return "default";
-    }
-  };
-
-  return (
-    <Chip label={status || "Unknown"} color={getStatusColor()} size="small" />
-  );
-};
+});
 
 const IframeModal = ({ show, onHide, url, resultType }) => {
   const renderResultContent = () => {
     if (!url) return <Typography p={3}>No result available</Typography>;
 
     const iframeProps = {
+      position: "fixed",
       src: `${url}#toolbar=0`,
-      style: {
-        border: "none",
-        width: "100%",
-        height: "100%",
-        minHeight: "600px",
-      },
+      name: "imgbox",
+      id: "imgbox",
       onContextMenu: (e) => e.preventDefault(),
+      style: { border: "none" },
     };
 
-    return <iframe {...iframeProps} />;
+    switch (resultType) {
+      case "pdf":
+        return <iframe {...iframeProps} width="100%" height="800px" />;
+      case "image":
+        return <iframe {...iframeProps} width="100%" height="800px" />;
+      case "video":
+        return <iframe {...iframeProps} width="100%" height="800px" />;
+      default:
+        return <iframe {...iframeProps} width="100%" height="800px" />;
+    }
   };
 
   return (
@@ -86,16 +57,13 @@ const IframeModal = ({ show, onHide, url, resultType }) => {
       show={show}
       onHide={onHide}
       size="xl"
-      aria-labelledby="result-modal-title"
+      aria-labelledby="contained-modal-title-vcenter"
       centered
-      style={{ maxWidth: "100vw", width: "100%" }}
+      style={{ maxWidth: "95vw", width: "100%" }}
     >
       <Modal.Header closeButton className="headerBg">
         <Modal.Title className="modal-title w-100 text-center">
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Visibility sx={{ mr: 1 }} />
-            Test Result - {resultType?.toUpperCase()}
-          </Box>
+          Test Result
         </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ padding: 0, height: "80vh" }}>
@@ -105,8 +73,10 @@ const IframeModal = ({ show, onHide, url, resultType }) => {
   );
 };
 
-const TestRow = ({ row }) => {
+const TestRow = ({ row , data}) => {
   const [modalShow, setModalShow] = useState(false);
+
+  console.log(data);
 
   const handleShowResult = () => {
     if (row.url) {
@@ -117,7 +87,7 @@ const TestRow = ({ row }) => {
   };
 
   const getResultIcon = () => {
-    if (!row.url) return null;
+    if (!row.url) return <Typography variant="body2">N/A</Typography>;
 
     switch (row.resultType) {
       case "pdf":
@@ -133,56 +103,34 @@ const TestRow = ({ row }) => {
 
   return (
     <>
-      <TableRow>
-        {/* Display Name if available, otherwise show SSN */}
-        <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
-          {row.name ? (
-            <Box>
-              <Typography variant="subtitle2" fontWeight="bold">
-                {row.name}
-              </Typography>
-            </Box>
-          ) : (
-            <Typography variant="body2" fontWeight="medium">
-              {row.ssn}
-            </Typography>
-          )}
+      <StyledTableRow>
+        {/* Display patient name if available */}
+        <TableCell align="left">
+          {row.name || data.patientDetails?.patientName || "N/A"}
         </TableCell>
-        <TableCell sx={{ minWidth: 200 }}>
-          <Typography variant="body2" noWrap title={row.ssn}>
-            {row.ssn}
-          </Typography>
+        
+        {/* Display SSN if available */}
+        <TableCell align="left">
+          {row.patientSSN || data.patientDetails?.patientSSN || "N/A"}
         </TableCell>
-
-        <TableCell sx={{ minWidth: 200 }}>
-          <Typography variant="body2" noWrap title={row.email}>
-            {row.email}
-          </Typography>
+        
+        {/* Display email if available */}
+        <TableCell align="left">
+          {row.patientEmail || data.patientDetails?.patientEmail || "N/A"}
         </TableCell>
-
-        <TableCell sx={{ minWidth: 120 }}>
-          <Typography variant="body2">{row.type}</Typography>
-        </TableCell>
-
-        <TableCell sx={{ minWidth: 120 }}>
-          <StatusChip status={row.status} />
-        </TableCell>
-
-        <TableCell sx={{ minWidth: 100 }}>
+        
+        <TableCell align="left">{row.type}</TableCell>
+        <TableCell align="left">{row.status}</TableCell>
+        <TableCell align="left">
           <IconButton
             onClick={handleShowResult}
             disabled={!row.url}
-            size="medium"
-            title={row.url ? "View Result" : "No result available"}
+            size="large"
           >
-            {getResultIcon() || (
-              <Typography variant="caption" color="textSecondary">
-                N/A
-              </Typography>
-            )}
+            {getResultIcon()}
           </IconButton>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
 
       {row.url && (
         <IframeModal
@@ -205,9 +153,7 @@ const LabResultsTable = ({ labId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (labId) {
-      fetchTestResults();
-    }
+    fetchTestResults();
   }, [labId]);
 
   const fetchTestResults = async () => {
@@ -236,8 +182,6 @@ const LabResultsTable = ({ labId }) => {
         config
       );
 
-      console.log("response888", response);
-
       if (response.status === 200) {
         setData({
           labDetails: response.data.labDetails,
@@ -245,200 +189,155 @@ const LabResultsTable = ({ labId }) => {
           patientDetails: {
             patientSSN: response.data.patientSSN,
             patientEmail: response.data.patientEmail,
-            patientName: response.data.patientName, // Added patientName
+            patientName: response.data.patientName, // Added patientName if available
           },
         });
       } else {
-        customToast("Failed to fetch test results", "error");
+        customToast("Something went wrong", "error");
       }
     } catch (error) {
       console.error("Error fetching test results:", error);
-      customToast(
-        error.response?.data?.message || "Failed to load test results",
-        "error"
-      );
+      customToast("Failed to load test results", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="400px"
-      >
-        <CircularProgress />
-        <Typography variant="h6" sx={{ ml: 2 }}>
-          Loading results...
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{ width: "100%", p: 5 }}>
-      {/* Lab Details Section */}
+    <Box sx={{ width: "100%", p: 0, m: 0 }}>
+      {isLoading && (
+        <Box display="flex" justifyContent="center" p={4}>
+          <Typography variant="h6">Loading results...</Typography>
+        </Box>
+      )}
+
       {data.labDetails && (
-        <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Science color="primary" sx={{ mr: 2, fontSize: 32 }} />
-            <Typography variant="h5" fontWeight="bold">
-              Lab Information
+        <Box
+          sx={{
+            mb: 4,
+            p: 3,
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+            
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
+            Lab Details
+          </Typography>
+          <Box
+            display="flex"
+            gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+            gap={2}
+          >
+            <Typography>
+              <strong>Name:</strong> {data.labDetails.name}
+            </Typography>
+            <Typography>
+              <strong>Address:</strong> {data.labDetails.address}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {data.labDetails.email}
+            </Typography>
+            <Typography>
+              <strong>Phone:</strong> {data.labDetails.phone}
+            </Typography>
+            <Typography>
+              <strong>Status:</strong> {data.labDetails.status}
+            </Typography>
+            <Typography>
+              <strong>Total Requests:</strong> {data.labDetails.totalRequests}
+            </Typography>
+            <Typography>
+              <strong>Success Rate:</strong> {data.labDetails.successRate}%
             </Typography>
           </Box>
-          <Divider sx={{ mb: 3 }} />
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Lab Name
-              </Typography>
-              <Typography variant="body1" fontWeight="medium">
-                {data.labDetails.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Address
-              </Typography>
-              <Typography variant="body1">{data.labDetails.address}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Contact Email
-              </Typography>
-              <Typography variant="body1">{data.labDetails.email}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Phone Number
-              </Typography>
-              <Typography variant="body1">{data.labDetails.phone}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Status
-              </Typography>
-              <StatusChip status={data.labDetails.status} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Performance Metrics
-              </Typography>
-              <Box display="flex" gap={3}>
-                <Typography variant="body2">
-                  Requests: {data.labDetails.totalRequests}
-                </Typography>
-                <Typography variant="body2">
-                  Success: {data.labDetails.successRate}%
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Paper>
+        </Box>
       )}
 
-      {/* Patient Details Section */}
       {data.patientDetails && (
-        <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Person color="primary" sx={{ mr: 2, fontSize: 32 }} />
-            <Typography variant="h5" fontWeight="bold">
-              Patient Information
+        <Box
+          sx={{
+            mb: 4,
+            p: 3,
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
+            Patient Details
+          </Typography>
+          <Box display="flex" gap={4}>
+            {/* Display patient name if available */}
+            {data.patientDetails.patientName && (
+              <Typography>
+                <strong>Name:</strong> {data.patientDetails.patientName}
+              </Typography>
+            )}
+            <Typography>
+              <strong>SSN:</strong> {data.patientDetails.patientSSN}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {data.patientDetails.patientEmail}
             </Typography>
           </Box>
-          <Divider sx={{ mb: 3 }} />
-          <Grid container spacing={3}>
-            {/* Display Name if available */}
-            {data.patientDetails.patientName && (
-              <Grid item xs={12} md={6}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Patient Name
-                </Typography>
-                <Typography variant="body1" fontWeight="medium">
-                  {data.patientDetails.patientName}
-                </Typography>
-              </Grid>
-            )}
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Social Security Number
-              </Typography>
-              <Typography variant="body1" fontWeight="medium">
-                {data.patientDetails.patientSSN}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Email Address
-              </Typography>
-              <Typography variant="body1">
-                {data.patientDetails.patientEmail}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
+        </Box>
       )}
 
-      {/* Test Results Section */}
       {data.testList.length > 0 ? (
-        <Paper elevation={2} sx={{ borderRadius: 1, overflow: "hidden" }}>
-          <Box sx={{ p: 2, backgroundColor: "primary.main", color: "white" }}>
-            <Box display="flex" alignItems="center">
-              <Assignment sx={{ mr: 2 }} />
-              <Typography variant="h5" fontWeight="bold">
-                Test Results ({data.testList.length})
-              </Typography>
-            </Box>
-          </Box>
+        <Box
+          sx={{
+            border: "1px solid #eee",
+            borderRadius: 2,
+            boxShadow: 1,
+            backgroundColor: "background.paper",
+            overflow: "hidden",
+          }}
+        >
+          <Typography variant="h5" sx={{ p: 3, fontWeight: "bold" }}>
+            Test Results
+          </Typography>
           <TableContainer>
             <Table aria-label="test results table" size="medium">
               <TableHead>
-                <TableRow sx={{ backgroundColor: "grey.100" }}>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
-                    Name
+                <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                  {/* Updated table headers */}
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                    Patient Name
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
                     SSN
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 200 }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
                     Email
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 120 }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
                     Test Type
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 120 }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
                     Status
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", minWidth: 100 }}>
+                  <TableCell align="left" sx={{ fontWeight: "bold" }}>
                     Result
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.testList.map((row) => (
-                  <TestRow key={row.testID || Math.random()} row={row} />
+                  <TestRow key={row.testID} row={row} data={data} />
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
+        </Box>
       ) : (
         !isLoading && (
-          <Paper
-            elevation={2}
-            sx={{ p: 4, textAlign: "center", borderRadius: 2 }}
-          >
-            <Assignment color="disabled" sx={{ fontSize: 48, mb: 2 }} />
-            <Typography variant="h6" color="textSecondary">
-              No test results found
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-              There are no test results available for the selected criteria.
-            </Typography>
-          </Paper>
+          <Box display="flex" justifyContent="center" p={4}>
+            <Typography variant="h6">No test results found</Typography>
+          </Box>
         )
       )}
     </Box>

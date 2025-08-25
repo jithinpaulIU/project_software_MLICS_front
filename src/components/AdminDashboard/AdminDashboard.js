@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
   const doctorData = [
     {
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Kevin Jose",
       lab: "Sanofi Genzyme",
       requests: 24,
       auth: 18,
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
       change: "3.8%",
     },
     {
-      name: "Dr. David Rodriguez",
+      name: "Dr. Bibin Rodriguez",
       lab: "BioReference",
       requests: 12,
       auth: 10,
