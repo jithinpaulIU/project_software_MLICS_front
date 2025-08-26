@@ -12,8 +12,8 @@ const DrRequest = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const micsDrRequestList = useSelector(
-    (state) => state.DrRequestReducer.micsDrRequestList
+  const mlicsDrRequestList = useSelector(
+    (state) => state.DrRequestReducer.mlicsDrRequestList
   );
 
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const DrRequest = (props) => {
 
       const config = {
         method: "get",
-        url: `${process.env.REACT_APP_API_URL2}request`,
+        url: `${process.env.REACT_APP_API_URL2}drRequested`,
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
           "Content-Type": "application/json",
@@ -35,11 +35,11 @@ const DrRequest = (props) => {
       };
 
       const response = await axios(config);
-      setReqList(response.data);
+      setReqList(response?.data?.data);
 
       dispatch({
         type: actionTypes.GET_DRREQUEST,
-        micsDrRequestList: response.data,
+        mlicsDrRequestList: response?.data?.data,
       });
     } catch (err) {
       console.error("Error fetching request data:", err);

@@ -15,36 +15,45 @@ const DrRequestList = ({ FetchData }) => {
   const [selectionModel, setSelectionModel] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const micsDrRequestList = useSelector(
-    (state) => state.DrRequestReducer.micsDrRequestList
+  const mlicsDrRequestList = useSelector(
+    (state) => state.DrRequestReducer.mlicsDrRequestList
   );
+
+  console.log("mlicsDrRequestList000", mlicsDrRequestList);
 
   const columns = [
     { field: "id", headerName: "#", width: 50 },
     { field: "Email", headerName: "Email", width: 210 },
     { field: "SSN", headerName: "SSN", width: 150 },
-    { field: "Doctor", headerName: "DOCTOR", width: 150 },
-    { field: "Lab", headerName: "Lab", width: 100 },
+    { field: "PatientName", headerName: "Patient Name", width: 150 },
+    { field: "Lab", headerName: "Lab", width: 200 },
     { field: "Type", headerName: "Type", width: 150 },
-    { field: "Status", headerName: "Status", width: 120 },
+    { field: "Mobile", headerName: "Mobile", width: 150 },
     {
-      field: "Starttime",
+      field: "CreatedAt",
       headerName: "Date",
-      width: 150,
-      valueFormatter: (params) => moment(params.value).format("DD - MM - YYYY"),
+      width: 180,
+      valueFormatter: (params) =>
+        moment(params.value).format("DD - MM - YYYY HH:mm"),
     },
+    { field: "RequestID", headerName: "Request ID", width: 100 },
   ];
 
-  const rows = micsDrRequestList.map((item, index) => ({
-    id: index + 1,
-    Email: item.email,
-    SSN: item.SSN,
-    Doctor: item.doctor,
-    Status: item.status,
-    Starttime: item.starttime,
-    Lab: item.lab,
-    Type: item.type,
-  }));
+  // Flatten the data structure to create rows from all requests
+  const rows =
+    mlicsDrRequestList?.flatMap((patientData, patientIndex) =>
+      patientData.requests.map((request, requestIndex) => ({
+        id: `${patientIndex + 1}-${requestIndex + 1}`,
+        Email: request.email_patient,
+        SSN: patientData.patient_ssn,
+        PatientName: patientData.patient_details.name,
+        Lab: patientData.lab_details.name,
+        Type: request.type,
+        Mobile: patientData.patient_details.mobile_no,
+        CreatedAt: request.created_at,
+        RequestID: request.request_id,
+      }))
+    ) || [];
 
   if (loading) {
     return (
@@ -56,7 +65,7 @@ const DrRequestList = ({ FetchData }) => {
 
   return (
     <div
-      style={{ height: 400, width: "100%" }}
+      style={{ height: 600, width: "100%" }}
       className="container d-flex align-items-center"
     >
       <DataGrid
@@ -71,6 +80,7 @@ const DrRequestList = ({ FetchData }) => {
         }}
         className="mt-5"
         disableSelectionOnClick
+        autoHeight={false}
       />
     </div>
   );

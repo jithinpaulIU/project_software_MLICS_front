@@ -59,6 +59,33 @@ export const FetchLab = () => {
   };
 };
 
+export const FetchDrLab = () => {
+  return async (dispatch) => {
+    let userInfo = localStorage.getItem("user");
+    console.log("hello labs", `${process.env.REACT_APP_API_URL2}labs`);
+    userInfo = JSON.parse(userInfo);
+    var config = {
+      method: "get",
+      url: `${process.env.REACT_APP_API_URL2}labs`,
+      headers: {
+        Authorization: `Bearer ` + userInfo.token,
+        "Content-Type": "application/json",
+      },
+    };
+
+    await axios(config)
+      .then((response) => {
+        dispatch({
+          type: actionTypes.GET_LABLIST,
+          mlicsLabList: response.data.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+};
+
 export const FetchRequest = () => {
   return async (dispatch) => {
     let userInfo = localStorage.getItem("user");

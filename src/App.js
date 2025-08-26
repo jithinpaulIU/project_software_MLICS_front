@@ -13,7 +13,7 @@ import ContactUS from "./components/DoctorDashboard/ContactUs";
 import Labs from "./components/AdminDashboard/Labs";
 import Request from "./components/AdminDashboard/Request";
 import DrDashboard from "./components/DoctorDashboard/DrDashboard";
-// import DrLabs from "./components/DoctorDashboard/DrLabs";
+import DrLabs from "./components/DoctorDashboard/DrLabs";
 import DrRequest from "./components/DoctorDashboard/DrRequest";
 import Patienttabs from "./components/DoctorDashboard/PatientTabs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -65,8 +65,8 @@ const DrContainer = () => (
     <Route index element={<DrDashboard />} />
     <Route path="contactus" element={<ContactUS />} />
     <Route path="drrequest" element={<DrRequest />} />
-    {/* <Route path="drlabs" element={<DrLabs />} />
-    <Route path="drrequest" element={<DrRequest />} /> */}
+    <Route path="drlabs" element={<DrLabs />} />
+    <Route path="drrequest" element={<DrRequest />} />
     <Route path="patientTabs" element={<Patienttabs />} />
     <Route path="*" element={<Navigate to="/drdashboard" replace />} />
   </Routes>

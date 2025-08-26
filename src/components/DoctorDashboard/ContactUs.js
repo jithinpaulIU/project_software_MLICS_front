@@ -43,13 +43,7 @@ const ContactUS = () => {
               <div className="container">
                 <div className="section-title">
                   <h2>Contact</h2>
-                  <p>
-                    Magnam dolores commodi suscipit. Necessitatibus eius
-                    consequatur ex aliquid fuga eum quidem. Sit sint consectetur
-                    velit. Quisquam quos quisquam cupiditate. Et nemo qui
-                    impedit suscipit alias ea. Quia fugiat sit in iste officiis
-                    commodi quidem hic quas.
-                  </p>
+                  <p>Contact the admin for more details</p>
                 </div>
               </div>
 
@@ -78,12 +72,12 @@ const ContactUS = () => {
                       <div className="email">
                         <i className="icofont-envelope" />
                         <h4>Email:</h4>
-                        <p>info@mics.com</p>
+                        <p>info@mlics.com</p>
                       </div>
                       <div className="phone">
                         <i className="icofont-phone" />
                         <h4>Call:</h4>
-                        <p>+1 5589 55488 55</p>
+                        <p>+1 5589 55488 95</p>
                       </div>
                     </div>
                   </div>
