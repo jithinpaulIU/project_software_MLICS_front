@@ -1,8 +1,41 @@
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+<!-- App run on  -->
+
+
+
+url : https://mlics.netlify.app/
+
+
+For admin login.
+
+username:admin@mlics.com
+password:admin@123
+
+
+For Doctor Login
+
+username:drkj@mlics.com
+password:doctor@123
+
+for verification patient:
+email:patient4@example.com
+SSN:100000004
+
+
+Get OTP created a dummy mail:
+email provide link: https://ethereal.email/login
+"user": "rebekah.crooks78@ethereal.email",
+"pass": "5emXFqWMdA2NQVY4mx"
+
 ## Available Scripts
+
+
 
 Project packages can be installed 
 
@@ -35,29 +68,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### `npm run eject`
 
-url : https://mlics.netlify.app/
-
-
-For admin login.
-
-username:admin@mlics.com
-password:admin@123
-
-
-For Doctor Login
-
-username:drkj@mlics.com
-password:doctor@123
-
-for verification patient:
-email:patient4@example.com
-SSN:100000004
-
-
-Get OTP created a dummy mail:
-email provide link: https://ethereal.email/login
-"user": "rebekah.crooks78@ethereal.email",
-"pass": "5emXFqWMdA2NQVY4mx"
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
