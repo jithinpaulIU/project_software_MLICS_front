@@ -11,8 +11,6 @@ const ContactUS = () => {
     const data = Object.fromEntries(formData);
 
     try {
-      // Here you would typically make an API call
-      console.log("Form data:", data);
       // Simulate successful submission
       alert("Your message has been sent. Thank you!");
       formRef.current.reset();

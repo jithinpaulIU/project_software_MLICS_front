@@ -51,6 +51,12 @@ for verification patient:
 email:patient4@example.com
 SSN:100000004
 
+
+Get OTP created a dummy mail:
+email provide link: https://ethereal.email/login
+"user": "rebekah.crooks78@ethereal.email",
+"pass": "5emXFqWMdA2NQVY4mx"
+
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
 If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.

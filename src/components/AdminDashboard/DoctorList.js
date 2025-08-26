@@ -36,7 +36,6 @@ const DoctorList = () => {
     const fetchData = async () => {
       try {
         await dispatch(FetchDoctor());
-        console.log("mlicsDoctorList", mlicsDoctorList);
       } catch (error) {
         console.error("Error fetching doctors:", error);
       } finally {

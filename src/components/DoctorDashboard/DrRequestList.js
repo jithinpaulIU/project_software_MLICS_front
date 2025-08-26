@@ -19,8 +19,6 @@ const DrRequestList = ({ FetchData }) => {
     (state) => state.DrRequestReducer.mlicsDrRequestList
   );
 
-  console.log("mlicsDrRequestList000", mlicsDrRequestList);
-
   const columns = [
     { field: "id", headerName: "#", width: 50 },
     { field: "Email", headerName: "Email", width: 210 },

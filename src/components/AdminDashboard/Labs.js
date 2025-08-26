@@ -25,7 +25,6 @@ const Labs = () => {
 
   useEffect(() => {
     const loadLab = async () => {
-      console.log("hello lab");
       dispatch(FetchLab());
     };
     loadLab();

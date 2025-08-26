@@ -73,10 +73,8 @@ const IframeModal = ({ show, onHide, url, resultType }) => {
   );
 };
 
-const TestRow = ({ row , data}) => {
+const TestRow = ({ row, data }) => {
   const [modalShow, setModalShow] = useState(false);
-
-  console.log(data);
 
   const handleShowResult = () => {
     if (row.url) {
@@ -108,17 +106,17 @@ const TestRow = ({ row , data}) => {
         <TableCell align="left">
           {row.name || data.patientDetails?.patientName || "N/A"}
         </TableCell>
-        
+
         {/* Display SSN if available */}
         <TableCell align="left">
           {row.patientSSN || data.patientDetails?.patientSSN || "N/A"}
         </TableCell>
-        
+
         {/* Display email if available */}
         <TableCell align="left">
           {row.patientEmail || data.patientDetails?.patientEmail || "N/A"}
         </TableCell>
-        
+
         <TableCell align="left">{row.type}</TableCell>
         <TableCell align="left">{row.status}</TableCell>
         <TableCell align="left">
@@ -220,7 +218,6 @@ const LabResultsTable = ({ labId }) => {
             borderRadius: 2,
             boxShadow: 1,
             backgroundColor: "background.paper",
-            
           }}
         >
           <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>

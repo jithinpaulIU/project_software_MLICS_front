@@ -52,7 +52,6 @@ function Login() {
       );
 
       if (response.status === 200) {
-        console.log("Login response:", response);
         const credentials = {
           email: response?.data?.user?.email,
           name: response?.data?.user?.username,

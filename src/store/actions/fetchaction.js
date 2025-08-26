@@ -35,7 +35,7 @@ export const FetchDoctor = () => {
 export const FetchLab = () => {
   return async (dispatch) => {
     let userInfo = localStorage.getItem("user");
-    console.log("hello labs", `${process.env.REACT_APP_API_URL}labs`);
+
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",
@@ -62,7 +62,7 @@ export const FetchLab = () => {
 export const FetchDrLab = () => {
   return async (dispatch) => {
     let userInfo = localStorage.getItem("user");
-    console.log("hello labs", `${process.env.REACT_APP_API_URL2}labs`);
+
     userInfo = JSON.parse(userInfo);
     var config = {
       method: "get",
