@@ -35,6 +35,8 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### `npm run eject`
 
+url : https://mlics.netlify.app/
+
 
 For admin login.
 
